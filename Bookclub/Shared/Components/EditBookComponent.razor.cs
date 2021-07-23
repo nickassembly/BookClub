@@ -119,7 +119,7 @@ namespace Bookclub.Shared.Components
 
         public async void CancelEditAsync()
         {
-            NavigationManager.NavigateTo("books", true);
+             NavigationManager.NavigateTo("books", true);
         }
 
         public Book GetNewBookInfo()

@@ -5,9 +5,7 @@ using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using System;
-using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
 {
@@ -82,18 +80,15 @@ namespace Bookclub.Shared.Components
            
         }
 
-        public async void AddBookDetails()
+        public async void SendGoogleApiRequest()
         {
-            var request = new GoogleApiRequest
+            var googleRequest = new GoogleApiRequest
             {
                 Isbn = this.BookView.Isbn,
                 Isbn13 = this.BookView.Isbn13
             };
 
-            // TODO: Pass isbn and isbn13 and whatever else is needed into the Google Api lookup
-
-            string isbn = "0735619670";
-            await JSRuntime.InvokeAsync<string>("getBookInfo", new { isbn });
+   
         }
 
         public async void CancelAddAsync()
