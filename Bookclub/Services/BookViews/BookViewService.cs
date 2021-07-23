@@ -52,7 +52,9 @@ namespace Bookclub.Services.BookViews
         public async Task<BookResponse> EditBookAsync(Book bookToEdit)
         {
             var bookDetails = new Google.Apis.Books.v1.Data.Volume();
+
             bookDetails = await SearchISBN(bookToEdit.Isbn);
+
             bookToEdit.Author = bookDetails.VolumeInfo.Authors[0]; //TODO: Authors is array, should change book model to match
             bookToEdit.Title = bookDetails.VolumeInfo.Title;
             bookToEdit.Subtitle = bookDetails.VolumeInfo.Subtitle;
@@ -70,6 +72,7 @@ namespace Bookclub.Services.BookViews
         {
             return _bookService.DeleteBookAsync(bookId);
         }
+
         public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
         {
             var result = await service.Volumes.List(isbn).ExecuteAsync();
@@ -80,12 +83,14 @@ namespace Bookclub.Services.BookViews
             }
             return null;
         }
+
         public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
                new BaseClientService.Initializer
                {
                    ApplicationName = "BookClub",  // is this right? not sure if it matters
                    ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
                });
+
         public async Task<Book> MapToBook(BookView bookView)
         {
 

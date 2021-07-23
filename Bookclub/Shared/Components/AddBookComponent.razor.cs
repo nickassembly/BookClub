@@ -4,8 +4,11 @@ using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
 using Bookclub.Views.Bases;
+using Google.Apis.Services;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
 {
@@ -88,8 +91,35 @@ namespace Bookclub.Shared.Components
                 Isbn13 = this.BookView.Isbn13
             };
 
-   
+            string searchIsbn = googleRequest.Isbn13 != null
+                ? googleRequest.Isbn13
+                : googleRequest.Isbn;
+
+            var bookDetails = new Google.Apis.Books.v1.Data.Volume();
+
+            bookDetails = await SearchISBN(searchIsbn);
+
+            // TODO: display return object on fields on screen
+
         }
+
+        public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
+        {
+            var result = await service.Volumes.List(isbn).ExecuteAsync();
+            if (result != null && result.Items != null)
+            {
+                var item = result.Items.FirstOrDefault();
+                return item;
+            }
+            return null;
+        }
+
+        public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
+              new BaseClientService.Initializer
+              {
+                  ApplicationName = "BookClub",  // is this right? not sure if it matters
+                   ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
+               });
 
         public async void CancelAddAsync()
         {
