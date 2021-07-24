@@ -60,6 +60,10 @@
                             Label="Cancel"
                             OnClick="@CancelEditAsync" />
 
+                <ButtonBase @ref=AddBookDetailsButton
+                            Label="ISBN DB Details"
+                            OnClick="(() => SendGoogleApiRequest(BookToEdit))" />
+
                 <br />
                 <LabelBase @ref=StatusLabel />
 

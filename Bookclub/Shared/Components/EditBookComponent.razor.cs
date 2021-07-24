@@ -35,6 +35,7 @@ namespace Bookclub.Shared.Components
         public DatePickerBase PublishDatePicker { get; set; }
         public ButtonBase ConfirmEditButton { get; set; }
         public ButtonBase CancelEditButton { get; set; }
+        public ButtonBase AddBookDetailsButton { get; set; }
         public LabelBase StatusLabel { get; set; }
 
         // TODO: Need better way to handle publish date picker
@@ -85,6 +86,7 @@ namespace Bookclub.Shared.Components
 
         public async void EditBookAsync(Book bookToEdit)
         {
+
             decimal uneditedListPrice = bookToEdit.ListPrice;
 
             try
@@ -115,6 +117,41 @@ namespace Bookclub.Shared.Components
                 throw;
             }
 
+        }
+
+        // TODO: Create method to handle edit or google in the same flow
+        public async void SendGoogleApiRequest(Book bookToEdit)
+        {
+            decimal uneditedListPrice = bookToEdit.ListPrice;
+
+            try
+            {
+                bookToEdit.Isbn = !string.IsNullOrEmpty(Isbn) ? Isbn : bookToEdit.Isbn;
+                bookToEdit.Author = !string.IsNullOrEmpty(Author) ? Author : bookToEdit.Author;
+                bookToEdit.Isbn13 = !string.IsNullOrEmpty(Isbn13) ? Isbn13 : bookToEdit.Isbn13;
+                bookToEdit.Title = !string.IsNullOrEmpty(Title) ? Title : bookToEdit.Title;
+                bookToEdit.Subtitle = !string.IsNullOrEmpty(Subtitle) ? Subtitle : bookToEdit.Subtitle;
+                bookToEdit.Publisher = !string.IsNullOrEmpty(Publisher) ? Publisher : bookToEdit.Publisher;
+
+                // TODO: Date not being edited properly
+                bookToEdit.PublishDate = PublishDateInput != default ? PublishDateInput : bookToEdit.PublishDate;
+
+                if (Convert.ToDecimal(BookListPrice) == 0)
+                    bookToEdit.ListPrice = uneditedListPrice;
+                else
+                    bookToEdit.ListPrice = Convert.ToDecimal(BookListPrice);
+
+                await BookViewService.EditBookAsync(bookToEdit);
+                ReportEditingSuccess();
+                NavigationManager.NavigateTo("books", true);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public async void CancelEditAsync()
