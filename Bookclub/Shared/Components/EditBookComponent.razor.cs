@@ -2,6 +2,7 @@
 using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
+using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -14,6 +15,9 @@ namespace Bookclub.Shared.Components
         public IBookViewService BookViewService { get; set; }
 
         [Inject]
+        public IBookDataApiService BookDataApiService { get; set; }
+
+        [Inject]
         public IBookService BookService { get; set; }
 
         [Parameter]
@@ -22,7 +26,7 @@ namespace Bookclub.Shared.Components
         [Parameter]
         public string BookListPrice { get; set; }
         public ComponentState State { get; set; }
-       // public AddBookComponentException Exception { get; set; }
+        // public AddBookComponentException Exception { get; set; }
         public BookView BookView { get; set; }
         public TextBoxBase IsbnTextBox { get; set; }
         public TextBoxBase Isbn13TextBox { get; set; }
@@ -119,44 +123,9 @@ namespace Bookclub.Shared.Components
 
         }
 
-        // TODO: Create method to handle edit or google in the same flow
-        public async void SendGoogleApiRequest(Book bookToEdit)
-        {
-            decimal uneditedListPrice = bookToEdit.ListPrice;
-
-            try
-            {
-                bookToEdit.Isbn = !string.IsNullOrEmpty(Isbn) ? Isbn : bookToEdit.Isbn;
-                bookToEdit.Author = !string.IsNullOrEmpty(Author) ? Author : bookToEdit.Author;
-                bookToEdit.Isbn13 = !string.IsNullOrEmpty(Isbn13) ? Isbn13 : bookToEdit.Isbn13;
-                bookToEdit.Title = !string.IsNullOrEmpty(Title) ? Title : bookToEdit.Title;
-                bookToEdit.Subtitle = !string.IsNullOrEmpty(Subtitle) ? Subtitle : bookToEdit.Subtitle;
-                bookToEdit.Publisher = !string.IsNullOrEmpty(Publisher) ? Publisher : bookToEdit.Publisher;
-
-                // TODO: Date not being edited properly
-                bookToEdit.PublishDate = PublishDateInput != default ? PublishDateInput : bookToEdit.PublishDate;
-
-                if (Convert.ToDecimal(BookListPrice) == 0)
-                    bookToEdit.ListPrice = uneditedListPrice;
-                else
-                    bookToEdit.ListPrice = Convert.ToDecimal(BookListPrice);
-
-                await BookViewService.EditBookAsync(bookToEdit);
-                ReportEditingSuccess();
-                NavigationManager.NavigateTo("books", true);
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            
-        }
-
         public async void CancelEditAsync()
         {
-             NavigationManager.NavigateTo("books", true);
+            NavigationManager.NavigateTo("books", true);
         }
 
         public Book GetNewBookInfo()

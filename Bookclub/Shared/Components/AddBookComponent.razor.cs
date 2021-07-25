@@ -83,26 +83,6 @@ namespace Bookclub.Shared.Components
            
         }
 
-        public async void SendGoogleApiRequest()
-        {
-            var googleRequest = new GoogleApiRequest
-            {
-                Isbn = this.BookView.Isbn,
-                Isbn13 = this.BookView.Isbn13
-            };
-
-            string searchIsbn = googleRequest.Isbn13 != null
-                ? googleRequest.Isbn13
-                : googleRequest.Isbn;
-
-            var bookDetails = new Google.Apis.Books.v1.Data.Volume();
-
-            bookDetails = await SearchISBN(searchIsbn);
-
-            // TODO: display return object on fields on screen
-
-        }
-
         public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
         {
             var result = await service.Volumes.List(isbn).ExecuteAsync();

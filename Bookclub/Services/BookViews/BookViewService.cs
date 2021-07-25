@@ -51,6 +51,8 @@ namespace Bookclub.Services.BookViews
 
         public async Task<BookResponse> EditBookAsync(Book bookToEdit)
         {
+            // TODO: Need to move this logic to different class IBookDataApi implementation
+
             var bookDetails = new Google.Apis.Books.v1.Data.Volume();
 
             bookDetails = await SearchISBN(bookToEdit.Isbn);
@@ -73,6 +75,7 @@ namespace Bookclub.Services.BookViews
             return _bookService.DeleteBookAsync(bookId);
         }
 
+        // TODO: Remove this code once method is abstracted to interface and working properly
         public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
         {
             var result = await service.Volumes.List(isbn).ExecuteAsync();

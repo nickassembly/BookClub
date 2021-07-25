@@ -8,8 +8,9 @@ namespace Bookclub.BooksAggregateModels
 {
     public class GoogleApiRequest
     {
-        // TODO: Add properties that can be used to search for book details
         public string Isbn { get; set; }
         public string Isbn13 { get; set; }
+        public string Title { get; set; }
+        public List<string> Authors { get; set; }
     }
 }
