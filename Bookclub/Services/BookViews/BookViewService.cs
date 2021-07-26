@@ -1,5 +1,6 @@
 ﻿using Blazored.SessionStorage;
 using Bookclub.ApiModels.CreateBook;
+using Bookclub.BooksAggregateModels;
 using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Core.Services.Books;
@@ -48,10 +49,18 @@ namespace Bookclub.Services.BookViews
             return bookView;
         }
 
+        public async Task<GoogleApiResponse> GetApiDataAsync()
+        {
+            GoogleApiResponse response = new();
+
+
+
+            return response;
+        }
+
 
         public async Task<BookResponse> EditBookAsync(Book bookToEdit)
         {
-            // TODO: Need to move this logic to different class IBookDataApi implementation
 
             var bookDetails = new Google.Apis.Books.v1.Data.Volume();
 

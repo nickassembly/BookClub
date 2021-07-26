@@ -3,6 +3,7 @@ using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
+using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Components;
@@ -23,6 +24,9 @@ namespace Bookclub.Shared.Components
 
         [Inject]
         public IBookService BookService { get; set; }
+
+        [Inject]
+        public IBookDataApiService BookDataApiService { get; set; }
 
         public ComponentState State { get; set; }
         public BookView BookView { get; set; }
@@ -83,23 +87,34 @@ namespace Bookclub.Shared.Components
            
         }
 
-        public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
+        // TODO: Test add and edit
+        public async void GetApiDataAsync()
         {
-            var result = await service.Volumes.List(isbn).ExecuteAsync();
-            if (result != null && result.Items != null)
-            {
-                var item = result.Items.FirstOrDefault();
-                return item;
-            }
-            return null;
+            GoogleApiRequest googleRequest = new();
+
+            googleRequest.Isbn = BookView.Isbn;
+            googleRequest.Isbn13 = BookView.Isbn13;
+
+            await BookDataApiService.GetGoogleBookData(googleRequest);
         }
 
-        public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
-              new BaseClientService.Initializer
-              {
-                  ApplicationName = "BookClub",  // is this right? not sure if it matters
-                   ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
-               });
+        //public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
+        //{
+        //    var result = await service.Volumes.List(isbn).ExecuteAsync();
+        //    if (result != null && result.Items != null)
+        //    {
+        //        var item = result.Items.FirstOrDefault();
+        //        return item;
+        //    }
+        //    return null;
+        //}
+
+        //public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
+        //      new BaseClientService.Initializer
+        //      {
+        //          ApplicationName = "BookClub",  // is this right? not sure if it matters
+        //           ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
+        //       });
 
         public async void CancelAddAsync()
         {

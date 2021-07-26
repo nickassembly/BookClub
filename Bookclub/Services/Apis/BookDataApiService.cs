@@ -19,7 +19,7 @@ namespace Bookclub.Services.Apis
         {
             var bookDetails = new Volume();
 
-            bookDetails = await GetVolume(apiRequest.Title);
+            bookDetails = await GetVolume(apiRequest.Isbn);
 
             Book book = new();
 

@@ -62,7 +62,7 @@
 
                 <ButtonBase @ref=AddBookDetailsButton
                             Label="ISBN DB Details"
-                            OnClick="(() => SendGoogleApiRequest(BookToEdit))" />
+                            OnClick="@GetApiDataAsync" />
 
                 <br />
                 <LabelBase @ref=StatusLabel />

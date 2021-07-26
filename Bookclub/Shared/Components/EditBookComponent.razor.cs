@@ -1,4 +1,5 @@
-﻿using Bookclub.Core.DomainAggregates;
+﻿using Bookclub.BooksAggregateModels;
+using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
@@ -126,6 +127,16 @@ namespace Bookclub.Shared.Components
         public async void CancelEditAsync()
         {
             NavigationManager.NavigateTo("books", true);
+        }
+
+        public async void GetApiDataAsync()
+        {
+            GoogleApiRequest googleRequest = new();
+
+            googleRequest.Isbn = BookView.Isbn;
+            googleRequest.Isbn13 = BookView.Isbn13;
+
+            await BookDataApiService.GetGoogleBookData(googleRequest);
         }
 
         public Book GetNewBookInfo()
