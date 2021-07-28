@@ -87,7 +87,6 @@ namespace Bookclub.Shared.Components
            
         }
 
-        // TODO: Test add and edit
         public async void GetApiDataAsync()
         {
             GoogleApiRequest googleRequest = new();
@@ -95,26 +94,21 @@ namespace Bookclub.Shared.Components
             googleRequest.Isbn = BookView.Isbn;
             googleRequest.Isbn13 = BookView.Isbn13;
 
-            await BookDataApiService.GetGoogleBookData(googleRequest);
+            var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
+
+            if (apiBookData != null)
+            {
+                this.BookView.Isbn = apiBookData.Isbn;
+                this.BookView.Isbn13 = apiBookData.Isbn13;
+                this.BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
+                this.BookView.Title = apiBookData.Title;
+                this.BookView.Subtitle = apiBookData.Subtitle;
+                this.BookView.Publisher = apiBookData.Publisher;
+                this.BookView.PublishedDate = apiBookData.PublishedDate;
+                this.BookView.ListPrice = apiBookData.ListPrice;
+                this.BookView.MediaType = apiBookData.MediaType;
+            }
         }
-
-        //public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
-        //{
-        //    var result = await service.Volumes.List(isbn).ExecuteAsync();
-        //    if (result != null && result.Items != null)
-        //    {
-        //        var item = result.Items.FirstOrDefault();
-        //        return item;
-        //    }
-        //    return null;
-        //}
-
-        //public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
-        //      new BaseClientService.Initializer
-        //      {
-        //          ApplicationName = "BookClub",  // is this right? not sure if it matters
-        //           ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
-        //       });
 
         public async void CancelAddAsync()
         {

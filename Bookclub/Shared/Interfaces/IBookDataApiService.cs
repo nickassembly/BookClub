@@ -10,6 +10,6 @@ namespace Bookclub.Shared.Interfaces
 {
     public interface IBookDataApiService
     {
-        Task<Book> GetGoogleBookData(GoogleApiRequest apiRequest);
+        Task<BookView> GetGoogleBookData(GoogleApiRequest apiRequest);
     }
 }

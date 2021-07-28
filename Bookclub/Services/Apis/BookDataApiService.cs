@@ -5,6 +5,7 @@ using Bookclub.Shared.Interfaces;
 using Google.Apis.Books.v1;
 using Google.Apis.Books.v1.Data;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +16,21 @@ namespace Bookclub.Services.Apis
 {
     public class BookDataApiService : IBookDataApiService
     {
-        public async Task<Book> GetGoogleBookData(GoogleApiRequest apiRequest)
+        public async Task<BookView> GetGoogleBookData(GoogleApiRequest apiRequest)
         {
             var bookDetails = new Volume();
 
             bookDetails = await GetVolume(apiRequest.Isbn);
 
-            Book book = new();
+            var bookReturned = JsonConvert.SerializeObject(bookDetails);
 
-            // TODO: Map the Volume of returned Api Data to a book object
+            BookView bookApiDetails = new();
 
-            return book;
+            // TODO: Map returned book object to a book view and return to add form
+          //  bookApiDetails.Title = 
+           
+
+            return bookApiDetails;
         }
 
         public static async Task<Volume> GetVolume(string isbn)
