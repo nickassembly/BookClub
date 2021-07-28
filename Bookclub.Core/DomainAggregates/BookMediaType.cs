@@ -8,6 +8,7 @@ namespace Bookclub.Core.DomainAggregates
 {
     public enum BookMediaType
     {
+        Unknown,
         Paperback,
         Hardcover,
         Audiobook,

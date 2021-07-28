@@ -26,9 +26,14 @@ namespace Bookclub.Services.Apis
 
             BookView bookApiDetails = new();
 
-            // TODO: Map returned book object to a book view and return to add form
-          //  bookApiDetails.Title = 
-           
+           //TODO figure out how to get Media type, links, images, etc
+           // Possibly extract to a separate method
+            bookApiDetails.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier;
+            bookApiDetails.Isbn13 = bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier;
+            bookApiDetails.PrimaryAuthor = bookDetails.VolumeInfo.Authors.FirstOrDefault();
+            bookApiDetails.Publisher = bookDetails.VolumeInfo.Publisher;
+            bookApiDetails.PublishedDate = Convert.ToDateTime(bookDetails.VolumeInfo.PublishedDate);
+            bookApiDetails.ListPrice = bookDetails.SaleInfo.ListPrice.ToString();
 
             return bookApiDetails;
         }
