@@ -26,14 +26,23 @@ namespace Bookclub.Services.Apis
 
             BookView bookApiDetails = new();
 
-           //TODO figure out how to get Media type, links, images, etc
-           // Possibly extract to a separate method
-            bookApiDetails.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier;
-            bookApiDetails.Isbn13 = bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier;
-            bookApiDetails.PrimaryAuthor = bookDetails.VolumeInfo.Authors.FirstOrDefault();
-            bookApiDetails.Publisher = bookDetails.VolumeInfo.Publisher;
-            bookApiDetails.PublishedDate = Convert.ToDateTime(bookDetails.VolumeInfo.PublishedDate);
-            bookApiDetails.ListPrice = bookDetails.SaleInfo.ListPrice.ToString();
+            string publishDate = bookApiDetails.PublishedDate.ToString();
+
+            // TODO: Need to add Checks for Index Out of range
+            // TODO: Need to add checks for null
+            // Current terenary operations not catching exceptions. 
+
+            bookApiDetails.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier != null
+                ? bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier : " ";
+            bookApiDetails.Isbn13 = bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier != null
+                ? bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier : " ";
+            bookApiDetails.PrimaryAuthor = bookDetails.VolumeInfo.Authors.First() != null
+                ? bookDetails.VolumeInfo.Authors.First() : " ";
+            bookApiDetails.Publisher = bookDetails.VolumeInfo.Publisher != null
+                ? bookDetails.VolumeInfo.Publisher : " ";
+            bookApiDetails.PublishedDate = GetPublishDate(publishDate);
+            bookApiDetails.ListPrice = bookDetails.SaleInfo.ListPrice.ToString() != null
+                ? bookDetails.SaleInfo.ListPrice.ToString() : " ";
 
             return bookApiDetails;
         }
@@ -47,6 +56,13 @@ namespace Bookclub.Services.Apis
                 return item;
             }
             return null;
+        }
+
+        public DateTimeOffset GetPublishDate(string publishDate)
+        {
+            var convertedDate = Convert.ToDateTime(publishDate);
+
+            return convertedDate;
         }
 
         public static BooksService service = new BooksService(
