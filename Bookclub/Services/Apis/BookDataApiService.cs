@@ -20,31 +20,40 @@ namespace Bookclub.Services.Apis
         {
             var bookDetails = new Volume();
 
+            // TODO : apiRequest.Isbn is not getting isbn entered in form
+
             bookDetails = await GetVolume(apiRequest.Isbn);
 
-            var bookReturned = JsonConvert.SerializeObject(bookDetails);
+            if (bookDetails == null)
+            {
+                BookView emptyBookViewData = new();
 
-            BookView bookApiDetails = new();
+                return emptyBookViewData;
+            }
+            else
+            {
+                BookView bookApiDetails = new();
 
-            string publishDate = bookApiDetails.PublishedDate.ToString();
+                string publishDate = bookApiDetails.PublishedDate.ToString();
 
-            // TODO: Need to add Checks for Index Out of range
-            // TODO: Need to add checks for null
-            // Current terenary operations not catching exceptions. 
+                var industryIdentifiers = bookDetails?.VolumeInfo?.IndustryIdentifiers.ToList();
 
-            bookApiDetails.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier != null
-                ? bookDetails.VolumeInfo.IndustryIdentifiers[0].Identifier : " ";
-            bookApiDetails.Isbn13 = bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier != null
-                ? bookDetails.VolumeInfo.IndustryIdentifiers[1].Identifier : " ";
-            bookApiDetails.PrimaryAuthor = bookDetails.VolumeInfo.Authors.First() != null
-                ? bookDetails.VolumeInfo.Authors.First() : " ";
-            bookApiDetails.Publisher = bookDetails.VolumeInfo.Publisher != null
-                ? bookDetails.VolumeInfo.Publisher : " ";
-            bookApiDetails.PublishedDate = GetPublishDate(publishDate);
-            bookApiDetails.ListPrice = bookDetails.SaleInfo.ListPrice.ToString() != null
-                ? bookDetails.SaleInfo.ListPrice.ToString() : " ";
+                if (industryIdentifiers.Count() > 1)
+                {
+                    bookApiDetails.Isbn = industryIdentifiers[0].Type == "ISBN_10"
+                        ? industryIdentifiers[0].Identifier : string.Empty;
+                    bookApiDetails.Isbn13 = industryIdentifiers[1].Type == "ISBN_13"
+                        ? industryIdentifiers[1].Identifier : string.Empty;
+                }
 
-            return bookApiDetails;
+                bookApiDetails.PrimaryAuthor = bookDetails?.VolumeInfo?.Authors?.First() ?? string.Empty;
+                bookApiDetails.Publisher = bookDetails?.VolumeInfo?.Publisher ?? string.Empty;
+                bookApiDetails.PublishedDate = GetPublishDate(publishDate);
+                bookApiDetails.ListPrice = bookDetails?.SaleInfo?.ListPrice?.ToString() ?? string.Empty;
+
+                return bookApiDetails;
+            }
+
         }
 
         public static async Task<Volume> GetVolume(string isbn)
