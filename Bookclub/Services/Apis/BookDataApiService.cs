@@ -40,9 +40,9 @@ namespace Bookclub.Services.Apis
 
                 if (industryIdentifiers.Count() > 1)
                 {
-                    bookApiDetails.Isbn = industryIdentifiers[0].Type == "ISBN_10"
+                    bookApiDetails.Isbn = industryIdentifiers[0].Type == "ISBN_13"
                         ? industryIdentifiers[0].Identifier : string.Empty;
-                    bookApiDetails.Isbn13 = industryIdentifiers[1].Type == "ISBN_13"
+                    bookApiDetails.Isbn13 = industryIdentifiers[1].Type == "ISBN_10"
                         ? industryIdentifiers[1].Identifier : string.Empty;
                 }
 
@@ -58,6 +58,7 @@ namespace Bookclub.Services.Apis
 
         public static async Task<Volume> GetVolume(string isbn)
         {
+            // TODO: Current request is searching title, not isbn for results
             var result = await service.Volumes.List(isbn).ExecuteAsync();
             if (result != null && result.Items != null)
             {

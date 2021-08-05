@@ -96,6 +96,9 @@ namespace Bookclub.Shared.Components
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 
+            // TODO: Need to take returned object (need to add checks first) and apply to the Book.razor view
+            // Possibly create a new view?
+
             if (apiBookData != null)
             {
                 this.BookView.Isbn = apiBookData.Isbn;
