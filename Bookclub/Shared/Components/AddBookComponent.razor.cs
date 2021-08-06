@@ -96,21 +96,17 @@ namespace Bookclub.Shared.Components
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 
-            // TODO: Need to take returned object (need to add checks first) and apply to the Book.razor view
-            // Possibly create a new view?
+            BookView.Isbn = apiBookData.Isbn;
+            BookView.Isbn13 = apiBookData.Isbn13;
+            BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
+            BookView.Title = apiBookData.Title;
+            BookView.Subtitle = apiBookData.Subtitle;
+            BookView.Publisher = apiBookData.Publisher;
+            BookView.PublishedDate = apiBookData.PublishedDate;
+            BookView.ListPrice = apiBookData.ListPrice;
 
-            if (apiBookData != null)
-            {
-                this.BookView.Isbn = apiBookData.Isbn;
-                this.BookView.Isbn13 = apiBookData.Isbn13;
-                this.BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
-                this.BookView.Title = apiBookData.Title;
-                this.BookView.Subtitle = apiBookData.Subtitle;
-                this.BookView.Publisher = apiBookData.Publisher;
-                this.BookView.PublishedDate = apiBookData.PublishedDate;
-                this.BookView.ListPrice = apiBookData.ListPrice;
-                this.BookView.MediaType = apiBookData.MediaType;
-            }
+            StateHasChanged();
+
         }
 
         public async void CancelAddAsync()

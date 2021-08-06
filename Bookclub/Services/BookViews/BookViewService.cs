@@ -120,6 +120,9 @@ namespace Bookclub.Services.BookViews
             if (!isValidPriceInput)
                 bookListPrice = 0.00m;
 
+            // TODO: Need to verify that books has either ISBN10/13, and author, title
+            // If not, return user to Add or Edit Screen with message... possibly toast?
+
             return new Book
             {
                 Id = Guid.NewGuid(),
