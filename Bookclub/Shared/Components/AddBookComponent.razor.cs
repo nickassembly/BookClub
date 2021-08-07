@@ -93,6 +93,7 @@ namespace Bookclub.Shared.Components
 
             googleRequest.Isbn = BookView.Isbn;
             googleRequest.Isbn13 = BookView.Isbn13;
+            googleRequest.Title = BookView.Title;
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 

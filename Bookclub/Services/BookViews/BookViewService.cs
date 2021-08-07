@@ -45,7 +45,13 @@ namespace Bookclub.Services.BookViews
         public async ValueTask<BookView> AddBookViewAsync(BookView bookView)
         {
             Book book = await MapToBook(bookView);
-            await _bookService.AddBookAsync(book);
+            var bookResponse = await _bookService.AddBookAsync(book);
+
+            if (!string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
+            {
+                // TODO: Return error message when book cannot be added
+            }
+
             return bookView;
         }
 

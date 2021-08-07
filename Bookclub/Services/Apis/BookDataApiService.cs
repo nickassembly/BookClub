@@ -20,9 +20,16 @@ namespace Bookclub.Services.Apis
         {
             var bookDetails = new Volume();
 
-            // TODO : apiRequest.Isbn is not getting isbn entered in form
+            string searchValue =
+                !string.IsNullOrWhiteSpace(apiRequest.Isbn13)
+                ? apiRequest.Isbn13
+                : !string.IsNullOrWhiteSpace(apiRequest.Isbn)
+                ? apiRequest.Isbn
+                : !string.IsNullOrWhiteSpace(apiRequest.Title)
+                ? apiRequest.Title
+                : string.Empty;
 
-            bookDetails = await GetVolume(apiRequest.Isbn);
+            bookDetails = await GetVolume(searchValue);
 
             if (bookDetails == null)
             {
@@ -49,17 +56,17 @@ namespace Bookclub.Services.Apis
                 bookApiDetails.PrimaryAuthor = bookDetails?.VolumeInfo?.Authors?.First() ?? string.Empty;
                 bookApiDetails.Publisher = bookDetails?.VolumeInfo?.Publisher ?? string.Empty;
                 bookApiDetails.PublishedDate = GetPublishDate(publishDate);
-                bookApiDetails.ListPrice = bookDetails?.SaleInfo?.ListPrice?.ToString() ?? string.Empty;
+                bookApiDetails.ListPrice = bookDetails?.SaleInfo?.ListPrice?.Amount.ToString() ?? string.Empty;
 
                 return bookApiDetails;
             }
 
         }
 
-        public static async Task<Volume> GetVolume(string isbn)
+        public static async Task<Volume> GetVolume(string searchValue)
         {
             // TODO: Current request is searching title, not isbn for results
-            var result = await service.Volumes.List(isbn).ExecuteAsync();
+            var result = await service.Volumes.List(searchValue).ExecuteAsync();
             if (result != null && result.Items != null)
             {
                 var item = result.Items.FirstOrDefault();
