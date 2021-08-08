@@ -11,6 +11,5 @@ namespace Bookclub.BooksAggregateModels
         public string Isbn { get; set; }
         public string Isbn13 { get; set; }
         public string Title { get; set; }
-        public List<string> Authors { get; set; } = new List<string>();
     }
 }

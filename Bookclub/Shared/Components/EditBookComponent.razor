@@ -62,7 +62,7 @@
 
                 <ButtonBase @ref=AddBookDetailsButton
                             Label="ISBN DB Details"
-                            OnClick="@GetApiDataAsync" />
+                            OnClick="(() => GetApiDataAsync(BookToEdit))" />
 
                 <br />
                 <LabelBase @ref=StatusLabel />

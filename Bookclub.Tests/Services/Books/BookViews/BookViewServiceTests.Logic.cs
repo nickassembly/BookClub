@@ -1,15 +1,4 @@
-﻿using Bookclub.Models.Books;
-using Bookclub.Models.Books.BookViews;
-using FluentAssertions;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Bookclub.Tests.Services.Books.BookViews
+﻿namespace Bookclub.Tests.Services.Books.BookViews
 {
     // TODO: Fix Tests, Need better modelling for placeholder info
     public partial class BookViewServiceTests

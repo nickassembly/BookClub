@@ -129,14 +129,35 @@ namespace Bookclub.Shared.Components
             NavigationManager.NavigateTo("books", true);
         }
 
-        public async void GetApiDataAsync()
+        public async void GetApiDataAsync(Book bookToEdit)
         {
             GoogleApiRequest googleRequest = new();
 
-            googleRequest.Isbn = BookView.Isbn;
-            googleRequest.Isbn13 = BookView.Isbn13;
+            bookToEdit.Isbn = !string.IsNullOrEmpty(Isbn) ? Isbn : bookToEdit.Isbn;
+            bookToEdit.Isbn13 = !string.IsNullOrEmpty(Isbn13) ? Isbn13 : bookToEdit.Isbn13;
+            bookToEdit.Title = !string.IsNullOrEmpty(Title) ? Title : bookToEdit.Title;
 
-            await BookDataApiService.GetGoogleBookData(googleRequest);
+            googleRequest.Isbn = bookToEdit.Isbn;
+            googleRequest.Isbn13 = bookToEdit.Isbn13;
+            googleRequest.Title = bookToEdit.Title;
+
+            var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
+
+            BookView.Isbn = apiBookData.Isbn;
+            BookView.Isbn13 = apiBookData.Isbn13;
+            BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
+            BookView.Title = apiBookData.Title;
+            BookView.Subtitle = apiBookData.Subtitle;
+            BookView.Publisher = apiBookData.Publisher;
+            BookView.PublishedDate = apiBookData.PublishedDate;
+            BookView.ListPrice = apiBookData.ListPrice;
+
+            StateHasChanged();
+
+            // TODO: Test Add and Edit with ISBN book data
+            // Clean up Isbn book data values (isbn 10 and 13 not working properly)
+            
+            // TODO: Add validation on form to require Isbn10 or 13 and title
         }
 
         public Book GetNewBookInfo()
