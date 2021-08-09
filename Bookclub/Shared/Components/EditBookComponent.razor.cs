@@ -68,6 +68,8 @@ namespace Bookclub.Shared.Components
 
         protected override void OnInitialized()
         {
+            // TODO: Need better way to handle dataflow
+            // Add GetById so that Razor page pulls a book in from database directly.
 
             this.BookView = new BookView
             {
@@ -129,17 +131,12 @@ namespace Bookclub.Shared.Components
             NavigationManager.NavigateTo("books", true);
         }
 
-        public async void GetApiDataAsync(Book bookToEdit)
+        public async void GetApiDataAsync()
         {
             GoogleApiRequest googleRequest = new();
-
-            bookToEdit.Isbn = !string.IsNullOrEmpty(Isbn) ? Isbn : bookToEdit.Isbn;
-            bookToEdit.Isbn13 = !string.IsNullOrEmpty(Isbn13) ? Isbn13 : bookToEdit.Isbn13;
-            bookToEdit.Title = !string.IsNullOrEmpty(Title) ? Title : bookToEdit.Title;
-
-            googleRequest.Isbn = bookToEdit.Isbn;
-            googleRequest.Isbn13 = bookToEdit.Isbn13;
-            googleRequest.Title = bookToEdit.Title;
+            googleRequest.Isbn = Isbn;
+            googleRequest.Isbn13 = Isbn13;
+            googleRequest.Title = Title;
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 
@@ -153,9 +150,6 @@ namespace Bookclub.Shared.Components
             BookView.ListPrice = apiBookData.ListPrice;
 
             StateHasChanged();
-
-            // TODO: Test Add and Edit with ISBN book data
-            // Clean up Isbn book data values (isbn 10 and 13 not working properly)
             
             // TODO: Add validation on form to require Isbn10 or 13 and title
         }

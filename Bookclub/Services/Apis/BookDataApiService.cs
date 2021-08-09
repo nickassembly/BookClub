@@ -47,9 +47,9 @@ namespace Bookclub.Services.Apis
 
                 if (industryIdentifiers.Count() > 1)
                 {
-                    bookApiDetails.Isbn = industryIdentifiers[0].Type == "ISBN_13"
+                    bookApiDetails.Isbn = industryIdentifiers[0].Type == "ISBN_10"
                         ? industryIdentifiers[0].Identifier : string.Empty;
-                    bookApiDetails.Isbn13 = industryIdentifiers[1].Type == "ISBN_10"
+                    bookApiDetails.Isbn13 = industryIdentifiers[1].Type == "ISBN_13"
                         ? industryIdentifiers[1].Identifier : string.Empty;
                 }
 
