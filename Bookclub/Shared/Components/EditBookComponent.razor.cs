@@ -7,17 +7,30 @@ using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
 {
     public partial class EditBookComponent
     {
+        private readonly IBookService _bookService;
+
+        public EditBookComponent(IBookService bookService)
+        {
+            _bookService = bookService;
+        }
+
+        public EditBookComponent()
+        {
+        }
+
         [Inject]
         public IBookViewService BookViewService { get; set; }
 
+        public Book BookToUpdate { get; set; }
+
         [Inject]
         public IBookDataApiService BookDataApiService { get; set; }
-
         [Inject]
         public IBookService BookService { get; set; }
 
@@ -56,6 +69,8 @@ namespace Bookclub.Shared.Components
                 PublishDateInputChanged.InvokeAsync(value);
             }
         }
+
+
         [Parameter]
         public EventCallback<DateTimeOffset> PublishDateInputChanged { get; set; }
 
@@ -66,28 +81,46 @@ namespace Bookclub.Shared.Components
         private string Subtitle { get; set; }
         private string Publisher { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            // TODO: Need better way to handle dataflow
-            // Add GetById so that Razor page pulls a book in from database directly.
+            Guid testGuid = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-            this.BookView = new BookView
-            {
-                Id = BookToEdit.Id,
-                Isbn = BookToEdit.Isbn,
-                Isbn13 = BookToEdit.Isbn13,
-                Title = BookToEdit.Title,
-                Subtitle = BookToEdit.Subtitle,
-                PrimaryAuthor = BookToEdit.Author,
-                Publisher = BookToEdit.Publisher,
-                ListPrice = BookToEdit.ListPrice.ToString(),
-                PublishedDate = BookToEdit.PublishDate
-                // MediaType = BookToEdit.MediaType
-                // TODO: Fix Media Type
-            };
-
-            this.State = ComponentState.Content;
+            await GetBookById(testGuid);
         }
+
+        public async Task<Book> GetBookById(Guid bookId)
+        {
+            Book bookToUpdate = new Book();
+
+            var bookResponse = await BookViewService.GetBookById(bookId);
+
+            BookToUpdate = bookResponse.Book;
+
+            return BookToUpdate;
+        }
+
+        //protected override void OnInitialized()
+        //{
+        //    // TODO: Need better way to handle dataflow
+        //    // Add GetById so that Razor page pulls a book in from database directly.
+
+        //    this.BookView = new BookView
+        //    {
+        //        Id = BookToEdit.Id,
+        //        Isbn = BookToEdit.Isbn,
+        //        Isbn13 = BookToEdit.Isbn13,
+        //        Title = BookToEdit.Title,
+        //        Subtitle = BookToEdit.Subtitle,
+        //        PrimaryAuthor = BookToEdit.Author,
+        //        Publisher = BookToEdit.Publisher,
+        //        ListPrice = BookToEdit.ListPrice.ToString(),
+        //        PublishedDate = BookToEdit.PublishDate
+        //        // MediaType = BookToEdit.MediaType
+        //        // TODO: Fix Media Type
+        //    };
+
+        //    this.State = ComponentState.Content;
+        //}
 
         // TODO: need client side validation.
 
@@ -150,7 +183,7 @@ namespace Bookclub.Shared.Components
             BookView.ListPrice = apiBookData.ListPrice;
 
             StateHasChanged();
-            
+
             // TODO: Add validation on form to require Isbn10 or 13 and title
         }
 

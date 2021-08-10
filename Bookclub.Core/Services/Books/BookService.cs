@@ -40,13 +40,46 @@ namespace Bookclub.Core.Services.Books
 
             List<Book> returnedBooks = JsonConvert.DeserializeObject<List<Book>>(bookGetResponse.Content);
 
-            BookResponse createdResponse = new BookResponse
+            BookResponse listResponse = new BookResponse
             {
                 ResponseMessage = bookGetResponse.StatusCode.ToString(),
                 Books = returnedBooks
             };
 
-            return createdResponse;
+            return listResponse;
+        }
+
+        public async Task<BookResponse> GetBookById(Guid bookId)
+        {
+            // TODO: Test get by Id
+            var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books/{bookId}");
+
+            client.Timeout = -1;
+
+            //var bearerAccessToken = $"bearer " + ctx.Request.Cookies["access_token"]; // may need later
+
+            var bookGetRequest = new RestRequest(Method.GET);
+
+            //bookAddRequest.AddHeader("Authorization", bearerAccessToken); 
+
+            var bookGetResponse = await client.ExecuteAsync<BookResponse>(bookGetRequest);
+
+            if (bookGetResponse.StatusCode.ToString() != "OK")
+            {
+                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookGetResponse.Content);
+
+                return invalidResponse;
+            }
+
+         Book returnedBook = JsonConvert.DeserializeObject<Book>(bookGetResponse.Content);
+
+            BookResponse getByIdResponse = new BookResponse
+            {
+                ResponseMessage = bookGetResponse.StatusCode.ToString(),
+                Book = returnedBook
+            };
+
+            return getByIdResponse;
         }
 
         public async Task<BookResponse> AddBookAsync(Book book)

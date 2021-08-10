@@ -42,6 +42,11 @@ namespace Bookclub.Services.BookViews
             return _bookService.GetAllBooks();
         }
 
+        public Task<BookResponse> GetBookById(Guid bookId)
+        {
+            return _bookService.GetBookById(bookId);
+        }
+
         public async ValueTask<BookView> AddBookViewAsync(BookView bookView)
         {
             Book book = await MapToBook(bookView);
