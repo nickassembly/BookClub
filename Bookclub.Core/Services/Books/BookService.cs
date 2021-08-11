@@ -66,9 +66,8 @@ namespace Bookclub.Core.Services.Books
 
             if (bookGetResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookGetResponse.Content);
+                return new BookResponse { ResponseMessage = "Problem adding book" };
 
-                return invalidResponse;
             }
 
          Book returnedBook = JsonConvert.DeserializeObject<Book>(bookGetResponse.Content);

@@ -8,27 +8,27 @@
             <div>
                 <TextBoxBase @ref="IsbnTextBox"
                              @bind-Value="@Isbn"
-                             Placeholder="@BookView.Isbn" />
+                             Placeholder="@BookViewToUpdate.Isbn" />
                 <LabelBase Value="Isbn" />
                 <br />
                 <TextBoxBase @ref="Isbn13TextBox"
                              @bind-Value="@Isbn13"
-                             Placeholder="@BookView.Isbn13" />
+                             Placeholder="@BookViewToUpdate.Isbn13" />
                 <LabelBase Value="Isbn13" />
                 <br />
                 <TextBoxBase @ref="AuthorTextBox"
                              @bind-Value="@Author"
-                             Placeholder="@BookView.PrimaryAuthor" />
+                             Placeholder="@BookViewToUpdate.PrimaryAuthor" />
                 <LabelBase Value="Author" />
                 <br />
                 <TextBoxBase @ref="TitleTextBox"
                              @bind-Value="@Title"
-                             Placeholder="@BookView.Title" />
+                             Placeholder="@BookViewToUpdate.Title" />
                 <LabelBase Value="Title" />
                 <br />
                 <TextBoxBase @ref="SubtitleTextBox"
                              @bind-Value="@Subtitle"
-                             Placeholder="@BookView.Subtitle" />
+                             Placeholder="@BookViewToUpdate.Subtitle" />
                 <LabelBase Value="Subtitle" />
                 <br />
                 @*
@@ -39,16 +39,16 @@
         <br />*@
                 <TextBoxBase @ref=PublisherTextBox
                              @bind-Value="@Publisher"
-                             Placeholder="@BookView.Publisher" />
+                             Placeholder="@BookViewToUpdate.Publisher" />
                 <LabelBase Value="Publisher" />
                 <br />
                 <TextBoxBase @ref=ListPrice
                              @bind-Value="@BookListPrice"
-                             PlaceHolder="@BookView.ListPrice" />
+                             PlaceHolder="@BookViewToUpdate.ListPrice" />
                 <LabelBase Value="List Price" />
                 <br />
                 <DatePickerBase @ref="PublishDatePicker"
-                                @bind-Value="@BookView.PublishedDate" />
+                                @bind-Value="@BookViewToUpdate.PublishedDate" />
                 <LabelBase Value="Publish Date" />
 
                 <br />

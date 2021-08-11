@@ -26,8 +26,8 @@ namespace Bookclub.Shared.Components
 
         [Inject]
         public IBookViewService BookViewService { get; set; }
-
         public Book BookToUpdate { get; set; }
+        public BookView BookViewToUpdate { get; set; }
 
         [Inject]
         public IBookDataApiService BookDataApiService { get; set; }
@@ -41,7 +41,7 @@ namespace Bookclub.Shared.Components
         public string BookListPrice { get; set; }
         public ComponentState State { get; set; }
         // public AddBookComponentException Exception { get; set; }
-        public BookView BookView { get; set; }
+
         public TextBoxBase IsbnTextBox { get; set; }
         public TextBoxBase Isbn13TextBox { get; set; }
         public TextBoxBase TitleTextBox { get; set; }
@@ -81,11 +81,25 @@ namespace Bookclub.Shared.Components
         private string Subtitle { get; set; }
         private string Publisher { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected async override Task OnInitializedAsync()
         {
-            Guid testGuid = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+            Guid testGuid = new Guid("a1664944-0d2c-4070-bf48-157ddc2f7605");
 
-            await GetBookById(testGuid);
+            var bookToUpdate = await GetBookById(testGuid);
+
+            this.BookViewToUpdate = new BookView
+            {
+                Isbn = bookToUpdate.Isbn,
+                Isbn13 = bookToUpdate.Isbn13,
+                PrimaryAuthor = bookToUpdate.Author,
+                Title = bookToUpdate.Title,
+                Subtitle = bookToUpdate.Subtitle,
+                Publisher = bookToUpdate.Publisher,
+                PublishedDate = bookToUpdate.PublishDate,
+                ListPrice = bookToUpdate.ListPrice.ToString(),
+            };
+
+            this.State = ComponentState.Content;
         }
 
         public async Task<Book> GetBookById(Guid bookId)
@@ -101,8 +115,8 @@ namespace Bookclub.Shared.Components
 
         //protected override void OnInitialized()
         //{
-        //    // TODO: Need better way to handle dataflow
-        //    // Add GetById so that Razor page pulls a book in from database directly.
+        //     TODO: Need better way to handle dataflow
+        //     Add GetById so that Razor page pulls a book in from database directly.
 
         //    this.BookView = new BookView
         //    {
@@ -115,8 +129,8 @@ namespace Bookclub.Shared.Components
         //        Publisher = BookToEdit.Publisher,
         //        ListPrice = BookToEdit.ListPrice.ToString(),
         //        PublishedDate = BookToEdit.PublishDate
-        //        // MediaType = BookToEdit.MediaType
-        //        // TODO: Fix Media Type
+        //         MediaType = BookToEdit.MediaType
+        //         TODO: Fix Media Type
         //    };
 
         //    this.State = ComponentState.Content;
@@ -173,14 +187,14 @@ namespace Bookclub.Shared.Components
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 
-            BookView.Isbn = apiBookData.Isbn;
-            BookView.Isbn13 = apiBookData.Isbn13;
-            BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
-            BookView.Title = apiBookData.Title;
-            BookView.Subtitle = apiBookData.Subtitle;
-            BookView.Publisher = apiBookData.Publisher;
-            BookView.PublishedDate = apiBookData.PublishedDate;
-            BookView.ListPrice = apiBookData.ListPrice;
+            BookViewToUpdate.Isbn = apiBookData.Isbn;
+            BookViewToUpdate.Isbn13 = apiBookData.Isbn13;
+            BookViewToUpdate.PrimaryAuthor = apiBookData.PrimaryAuthor;
+            BookViewToUpdate.Title = apiBookData.Title;
+            BookViewToUpdate.Subtitle = apiBookData.Subtitle;
+            BookViewToUpdate.Publisher = apiBookData.Publisher;
+            BookViewToUpdate.PublishedDate = apiBookData.PublishedDate;
+            BookViewToUpdate.ListPrice = apiBookData.ListPrice;
 
             StateHasChanged();
 
