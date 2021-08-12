@@ -70,7 +70,6 @@ namespace Bookclub.Shared.Components
             }
         }
 
-
         [Parameter]
         public EventCallback<DateTimeOffset> PublishDateInputChanged { get; set; }
 
@@ -83,9 +82,7 @@ namespace Bookclub.Shared.Components
 
         protected async override Task OnInitializedAsync()
         {
-            Guid testGuid = new Guid("a1664944-0d2c-4070-bf48-157ddc2f7605");
-
-            var bookToUpdate = await GetBookById(testGuid);
+            var bookToUpdate = await GetBookById(BookToEdit.Id);
 
             this.BookViewToUpdate = new BookView
             {
@@ -113,34 +110,8 @@ namespace Bookclub.Shared.Components
             return BookToUpdate;
         }
 
-        //protected override void OnInitialized()
-        //{
-        //     TODO: Need better way to handle dataflow
-        //     Add GetById so that Razor page pulls a book in from database directly.
-
-        //    this.BookView = new BookView
-        //    {
-        //        Id = BookToEdit.Id,
-        //        Isbn = BookToEdit.Isbn,
-        //        Isbn13 = BookToEdit.Isbn13,
-        //        Title = BookToEdit.Title,
-        //        Subtitle = BookToEdit.Subtitle,
-        //        PrimaryAuthor = BookToEdit.Author,
-        //        Publisher = BookToEdit.Publisher,
-        //        ListPrice = BookToEdit.ListPrice.ToString(),
-        //        PublishedDate = BookToEdit.PublishDate
-        //         MediaType = BookToEdit.MediaType
-        //         TODO: Fix Media Type
-        //    };
-
-        //    this.State = ComponentState.Content;
-        //}
-
-        // TODO: need client side validation.
-
         public async void EditBookAsync(Book bookToEdit)
         {
-
             decimal uneditedListPrice = bookToEdit.ListPrice;
 
             try
