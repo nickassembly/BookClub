@@ -7,6 +7,8 @@ using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Data.SqlTypes;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
@@ -73,13 +75,6 @@ namespace Bookclub.Shared.Components
         [Parameter]
         public EventCallback<DateTimeOffset> PublishDateInputChanged { get; set; }
 
-        private string Isbn { get; set; }
-        private string Isbn13 { get; set; }
-        private string Author { get; set; }
-        private string Title { get; set; }
-        private string Subtitle { get; set; }
-        private string Publisher { get; set; }
-
         protected async override Task OnInitializedAsync()
         {
             var bookToUpdate = await GetBookById(BookToEdit.Id);
@@ -110,35 +105,35 @@ namespace Bookclub.Shared.Components
             return BookToUpdate;
         }
 
-        public async void EditBookAsync(Book bookToEdit)
+        public async void EditBookAsync(BookView bookToEdit)
         {
-            decimal uneditedListPrice = bookToEdit.ListPrice;
-
             try
             {
+                Book book = new();
 
-                bookToEdit.Isbn = !string.IsNullOrEmpty(Isbn) ? Isbn : bookToEdit.Isbn;
-                bookToEdit.Author = !string.IsNullOrEmpty(Author) ? Author : bookToEdit.Author;
-                bookToEdit.Isbn13 = !string.IsNullOrEmpty(Isbn13) ? Isbn13 : bookToEdit.Isbn13;
-                bookToEdit.Title = !string.IsNullOrEmpty(Title) ? Title : bookToEdit.Title;
-                bookToEdit.Subtitle = !string.IsNullOrEmpty(Subtitle) ? Subtitle : bookToEdit.Subtitle;
-                bookToEdit.Publisher = !string.IsNullOrEmpty(Publisher) ? Publisher : bookToEdit.Publisher;
+                decimal bookListPrice;
 
-                // TODO: Date not being edited properly
-                bookToEdit.PublishDate = PublishDateInput != default ? PublishDateInput : bookToEdit.PublishDate;
-
-                if (Convert.ToDecimal(BookListPrice) == 0)
-                    bookToEdit.ListPrice = uneditedListPrice;
+                if (decimal.TryParse(bookToEdit.ListPrice, out bookListPrice) == false)
+                    book.ListPrice = 0;
                 else
-                    bookToEdit.ListPrice = Convert.ToDecimal(BookListPrice);
+                    book.ListPrice = bookListPrice;
 
-                await BookViewService.EditBookAsync(bookToEdit);
+                book.Isbn = !string.IsNullOrWhiteSpace(bookToEdit.Isbn) ? bookToEdit.Isbn : "No Isbn Available";
+                book.Isbn13 = !string.IsNullOrWhiteSpace(bookToEdit.Isbn13) ? bookToEdit.Isbn13 : "No Isbn13 Available";
+                book.Title = !string.IsNullOrWhiteSpace(bookToEdit.Title) ? bookToEdit.Title : "No Title Available";
+                book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
+                book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
+                book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
+
+                book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
+
+                await BookViewService.EditBookAsync(book);
                 ReportEditingSuccess();
                 NavigationManager.NavigateTo("books", true);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
+                var message = ex.Message;
                 throw;
             }
 
@@ -149,12 +144,12 @@ namespace Bookclub.Shared.Components
             NavigationManager.NavigateTo("books", true);
         }
 
-        public async void GetApiDataAsync()
+        public async void GetApiDataAsync(BookView bookToEdit)
         {
             GoogleApiRequest googleRequest = new();
-            googleRequest.Isbn = Isbn;
-            googleRequest.Isbn13 = Isbn13;
-            googleRequest.Title = Title;
+            googleRequest.Isbn = bookToEdit.Isbn;
+            googleRequest.Isbn13 = bookToEdit.Isbn13;
+            googleRequest.Title = bookToEdit.Title;
 
             var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
 

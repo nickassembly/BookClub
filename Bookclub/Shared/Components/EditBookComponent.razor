@@ -7,28 +7,28 @@
         <Content>
             <div>
                 <TextBoxBase @ref="IsbnTextBox"
-                             @bind-Value="@Isbn"
-                             Placeholder="@BookViewToUpdate.Isbn" />
+                             @bind-Value="@BookViewToUpdate.Isbn"
+                             Placeholder="Isbn" />
                 <LabelBase Value="Isbn" />
                 <br />
                 <TextBoxBase @ref="Isbn13TextBox"
-                             @bind-Value="@Isbn13"
-                             Placeholder="@BookViewToUpdate.Isbn13" />
+                             @bind-Value="@BookViewToUpdate.Isbn13"
+                             Placeholder="Isbn13"/>
                 <LabelBase Value="Isbn13" />
                 <br />
                 <TextBoxBase @ref="AuthorTextBox"
-                             @bind-Value="@Author"
-                             Placeholder="@BookViewToUpdate.PrimaryAuthor" />
+                             @bind-Value="@BookViewToUpdate.PrimaryAuthor"
+                             Placeholder="Author" />
                 <LabelBase Value="Author" />
                 <br />
                 <TextBoxBase @ref="TitleTextBox"
-                             @bind-Value="@Title"
-                             Placeholder="@BookViewToUpdate.Title" />
+                             @bind-Value="@BookViewToUpdate.Title"
+                             Placeholder="Title" />
                 <LabelBase Value="Title" />
                 <br />
                 <TextBoxBase @ref="SubtitleTextBox"
-                             @bind-Value="@Subtitle"
-                             Placeholder="@BookViewToUpdate.Subtitle" />
+                             @bind-Value="@BookViewToUpdate.Subtitle"
+                             Placeholder="Subtitle" />
                 <LabelBase Value="Subtitle" />
                 <br />
                 @*
@@ -38,13 +38,13 @@
              TEnum="BookViewMediaType" />
         <br />*@
                 <TextBoxBase @ref=PublisherTextBox
-                             @bind-Value="@Publisher"
-                             Placeholder="@BookViewToUpdate.Publisher" />
+                             @bind-Value="@BookViewToUpdate.Publisher"
+                             Placeholder="Publisher" />
                 <LabelBase Value="Publisher" />
                 <br />
                 <TextBoxBase @ref=ListPrice
-                             @bind-Value="@BookListPrice"
-                             PlaceHolder="@BookViewToUpdate.ListPrice" />
+                             @bind-Value="@BookViewToUpdate.ListPrice"
+                             PlaceHolder="List Price" />
                 <LabelBase Value="List Price" />
                 <br />
                 <DatePickerBase @ref="PublishDatePicker"
@@ -54,7 +54,7 @@
                 <br />
                 <ButtonBase @ref=ConfirmEditButton
                             Label="Confirm"
-                            OnClick="(() => EditBookAsync(BookToEdit))" />
+                            OnClick="(() => EditBookAsync(BookViewToUpdate))" />
 
                 <ButtonBase @ref=CancelEditButton
                             Label="Cancel"
@@ -62,7 +62,7 @@
 
                 <ButtonBase @ref=AddBookDetailsButton
                             Label="ISBN DB Details"
-                            OnClick="(() => GetApiDataAsync())" />
+                            OnClick="(() => GetApiDataAsync(BookViewToUpdate))" />
 
                 <br />
                 <LabelBase @ref=StatusLabel />
