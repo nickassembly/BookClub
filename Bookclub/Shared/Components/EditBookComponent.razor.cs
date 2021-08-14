@@ -39,17 +39,13 @@ namespace Bookclub.Shared.Components
         [Parameter]
         public Book BookToEdit { get; set; }
 
-        [Parameter]
-        public string BookListPrice { get; set; }
         public ComponentState State { get; set; }
-        // public AddBookComponentException Exception { get; set; }
 
         public TextBoxBase IsbnTextBox { get; set; }
         public TextBoxBase Isbn13TextBox { get; set; }
         public TextBoxBase TitleTextBox { get; set; }
         public TextBoxBase SubtitleTextBox { get; set; }
         public TextBoxBase AuthorTextBox { get; set; }
-        //public DropDownBase<BookViewMediaType> MediaTypeDropDown { get; set; }
         public TextBoxBase PublisherTextBox { get; set; }
         public TextBoxBase ListPrice { get; set; }
         public DatePickerBase PublishDatePicker { get; set; }
@@ -58,7 +54,6 @@ namespace Bookclub.Shared.Components
         public ButtonBase AddBookDetailsButton { get; set; }
         public LabelBase StatusLabel { get; set; }
 
-        // TODO: Need better way to handle publish date picker
         private DateTimeOffset _publishDateInput;
         [Parameter]
         public DateTimeOffset PublishDateInput
@@ -81,6 +76,7 @@ namespace Bookclub.Shared.Components
 
             this.BookViewToUpdate = new BookView
             {
+                Id = bookToUpdate.Id,
                 Isbn = bookToUpdate.Isbn,
                 Isbn13 = bookToUpdate.Isbn13,
                 PrimaryAuthor = bookToUpdate.Author,
@@ -109,7 +105,10 @@ namespace Bookclub.Shared.Components
         {
             try
             {
-                Book book = new();
+                // TODO: Try adding mapping code to map BookView on to Book
+                Book book = await MapToBook(bookToEdit);
+
+               // Book book = new();
 
                 decimal bookListPrice;
 
@@ -118,12 +117,14 @@ namespace Bookclub.Shared.Components
                 else
                     book.ListPrice = bookListPrice;
 
+                book.Id = bookToEdit.Id;
                 book.Isbn = !string.IsNullOrWhiteSpace(bookToEdit.Isbn) ? bookToEdit.Isbn : "No Isbn Available";
                 book.Isbn13 = !string.IsNullOrWhiteSpace(bookToEdit.Isbn13) ? bookToEdit.Isbn13 : "No Isbn13 Available";
                 book.Title = !string.IsNullOrWhiteSpace(bookToEdit.Title) ? bookToEdit.Title : "No Title Available";
                 book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
                 book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
                 book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
+                
 
                 book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
 

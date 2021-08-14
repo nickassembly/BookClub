@@ -110,11 +110,15 @@ namespace Bookclub.Core.Services.Books
 
             client.Timeout = -1;
 
-            var bookAddRequest = new RestRequest(Method.PUT);
+            var bookEditRequest = new RestRequest(Method.PUT);
 
-            bookAddRequest.AddJsonBody(book);
+            bookEditRequest.AddJsonBody(book);
 
-            var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookAddRequest);
+            var testObject = JsonConvert.SerializeObject(book);
+
+            // ERROR when updating book
+            // Unable to cast object of type 'System.String' to type 'System.Collections.Generic.IDictionary`2[System.String,System.Object]'
+            var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookEditRequest);
 
             if (bookAddResponse.StatusCode.ToString() != "OK")
             {

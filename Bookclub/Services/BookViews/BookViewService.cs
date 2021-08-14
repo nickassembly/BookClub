@@ -73,24 +73,24 @@ namespace Bookclub.Services.BookViews
         public async Task<BookResponse> EditBookAsync(Book bookToEdit)
         {
 
-            var bookDetails = new Google.Apis.Books.v1.Data.Volume();
+            //  var bookDetails = new Google.Apis.Books.v1.Data.Volume();
 
-            bookDetails = await SearchISBN(bookToEdit.Isbn);
+            //bookDetails = await SearchISBN(bookToEdit.Isbn);
 
-            bookToEdit.Author = bookDetails.VolumeInfo.Authors[0]; //TODO: Authors is array, should change book model to match
-            bookToEdit.Title = bookDetails.VolumeInfo.Title;
-            bookToEdit.Subtitle = bookDetails.VolumeInfo.Subtitle;
-            //bookToEdit.PublishDate = Date(bookDetails.VolumeInfo.PublishedDate);
-            bookToEdit.Publisher = bookDetails.VolumeInfo.Publisher;
-            bookToEdit.Title = bookDetails.VolumeInfo.Title;
+            //bookToEdit.Author = bookDetails.VolumeInfo.Authors[0]; //TODO: Authors is array, should change book model to match
+            //bookToEdit.Title = bookDetails.VolumeInfo.Title;
+            //bookToEdit.Subtitle = bookDetails.VolumeInfo.Subtitle;
+            ////bookToEdit.PublishDate = Date(bookDetails.VolumeInfo.PublishedDate);
+            //bookToEdit.Publisher = bookDetails.VolumeInfo.Publisher;
+            //bookToEdit.Title = bookDetails.VolumeInfo.Title;
             //bookToEdit.ListPrice = (double)bookDetails.SaleInfo.ListPrice.Amount;
-            
+
             //bookToEdit.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0]["identifier"] TODO: Check for IndustryIdentifiers array for type ISBN_10 or ISBN_13
 
-            return await _bookService.EditBookAsync(bookToEdit);
-        }
+             return await _bookService.EditBookAsync(bookToEdit);
+            }
 
-        public Task<BookResponse> DeleteBookAsync(Guid bookId)
+            public Task<BookResponse> DeleteBookAsync(Guid bookId)
         {
             return _bookService.DeleteBookAsync(bookId);
         }
