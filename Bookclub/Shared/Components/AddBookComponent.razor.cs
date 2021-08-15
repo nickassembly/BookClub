@@ -53,8 +53,6 @@ namespace Bookclub.Shared.Components
             this.BookView = new BookView();
             this.State = ComponentState.Content;
 
-
-
             // TODO: Refactor catch blocks to call Error.ProcessError to use global error component
             // something similar to below
             try

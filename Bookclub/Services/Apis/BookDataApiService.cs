@@ -29,9 +29,12 @@ namespace Bookclub.Services.Apis
                 ? apiRequest.Title
                 : string.Empty;
 
-            bookDetails = await GetVolume(searchValue);
+            if (!string.IsNullOrWhiteSpace(searchValue))
+                bookDetails = await GetVolume(searchValue);
 
-            if (bookDetails == null)
+           // bookDetails = await GetVolume(searchValue);
+
+            if (bookDetails == null || string.IsNullOrWhiteSpace(searchValue))
             {
                 BookView emptyBookViewData = new();
 

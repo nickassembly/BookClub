@@ -1,4 +1,5 @@
-﻿using Bookclub.BooksAggregateModels;
+﻿using Blazored.SessionStorage;
+using Bookclub.BooksAggregateModels;
 using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
@@ -6,9 +7,11 @@ using Bookclub.Shared.Components.ContainerComponents;
 using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Data.SqlTypes;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
@@ -16,10 +19,18 @@ namespace Bookclub.Shared.Components
     public partial class EditBookComponent
     {
         private readonly IBookService _bookService;
+        private readonly ISessionStorageService _sessionStorage;
+        private readonly IUserService _userService;
+        private readonly IHttpContextAccessor _ctx;
+        private readonly HttpClient _httpClient;
 
-        public EditBookComponent(IBookService bookService)
+        public EditBookComponent(IBookService bookService, ISessionStorageService sessionStorage, IUserService userService, IHttpContextAccessor ctx, HttpClient httpClient)
         {
             _bookService = bookService;
+            _sessionStorage = sessionStorage;
+            _userService = userService;
+            _ctx = ctx;
+            _httpClient = httpClient;
         }
 
         public EditBookComponent()
@@ -105,10 +116,17 @@ namespace Bookclub.Shared.Components
         {
             try
             {
-                // TODO: Try adding mapping code to map BookView on to Book
-                Book book = await MapToBook(bookToEdit);
+                Book book = new();
 
-               // Book book = new();
+                // TODO: Fix issue...null reference. Need to put in logic from MapToBook (see Add book component)
+                var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
+
+                User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
+
+                if (loggedInUser == null)
+                    NavigationManager.NavigateTo("/login");
+
+                DateTimeOffset updateDateTime = DateTimeOffset.UtcNow;
 
                 decimal bookListPrice;
 
@@ -124,8 +142,9 @@ namespace Bookclub.Shared.Components
                 book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
                 book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
                 book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
+                book.UpdatedBy = loggedInUser.Id;
+                book.UpdatedDate = updateDateTime;
                 
-
                 book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
 
                 await BookViewService.EditBookAsync(book);
