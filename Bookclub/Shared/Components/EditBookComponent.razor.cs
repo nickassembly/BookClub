@@ -118,7 +118,9 @@ namespace Bookclub.Shared.Components
             {
                 Book book = new();
 
-                // TODO: Fix issue...null reference. Need to put in logic from MapToBook (see Add book component)
+               // TODO: Add new user object possibly? Then book object to get User ID?
+               // Extract Map book to interface?
+               
                 var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
 
                 User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
