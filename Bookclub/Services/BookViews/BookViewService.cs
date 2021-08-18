@@ -52,7 +52,7 @@ namespace Bookclub.Services.BookViews
             Book book = await MapToBook(bookView);
             var bookResponse = await _bookService.AddBookAsync(book);
 
-            if (!string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
+            if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
             {
                 // TODO: Return error message when book cannot be added
             }
@@ -70,27 +70,20 @@ namespace Bookclub.Services.BookViews
         }
 
 
-        public async Task<BookResponse> EditBookAsync(Book bookToEdit)
+        public async ValueTask<BookView> EditBookAsync(BookView bookToEdit)
         {
+            Book editedBook = await MapToBook(bookToEdit);
+            var bookResponse = await _bookService.EditBookAsync(editedBook);
 
-            //  var bookDetails = new Google.Apis.Books.v1.Data.Volume();
-
-            //bookDetails = await SearchISBN(bookToEdit.Isbn);
-
-            //bookToEdit.Author = bookDetails.VolumeInfo.Authors[0]; //TODO: Authors is array, should change book model to match
-            //bookToEdit.Title = bookDetails.VolumeInfo.Title;
-            //bookToEdit.Subtitle = bookDetails.VolumeInfo.Subtitle;
-            ////bookToEdit.PublishDate = Date(bookDetails.VolumeInfo.PublishedDate);
-            //bookToEdit.Publisher = bookDetails.VolumeInfo.Publisher;
-            //bookToEdit.Title = bookDetails.VolumeInfo.Title;
-            //bookToEdit.ListPrice = (double)bookDetails.SaleInfo.ListPrice.Amount;
-
-            //bookToEdit.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0]["identifier"] TODO: Check for IndustryIdentifiers array for type ISBN_10 or ISBN_13
-
-             return await _bookService.EditBookAsync(bookToEdit);
+            if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
+            {
+                // TODO: Return error message when book cannot be added
             }
 
-            public Task<BookResponse> DeleteBookAsync(Guid bookId)
+            return bookToEdit;
+        }
+
+        public Task<BookResponse> DeleteBookAsync(Guid bookId)
         {
             return _bookService.DeleteBookAsync(bookId);
         }

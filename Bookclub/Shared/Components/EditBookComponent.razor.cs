@@ -116,40 +116,38 @@ namespace Bookclub.Shared.Components
         {
             try
             {
-                Book book = new();
-
-               // TODO: Add new user object possibly? Then book object to get User ID?
-               // Extract Map book to interface?
+                ApplySubmittingStatus();
+                await this.BookViewService.EditBookAsync(bookToEdit);
                
-                var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
+                //var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
 
-                User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
+                //User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
 
-                if (loggedInUser == null)
-                    NavigationManager.NavigateTo("/login");
+                //if (loggedInUser == null)
+                //    NavigationManager.NavigateTo("/login");
 
-                DateTimeOffset updateDateTime = DateTimeOffset.UtcNow;
+                //DateTimeOffset updateDateTime = DateTimeOffset.UtcNow;
 
-                decimal bookListPrice;
+                //decimal bookListPrice;
 
-                if (decimal.TryParse(bookToEdit.ListPrice, out bookListPrice) == false)
-                    book.ListPrice = 0;
-                else
-                    book.ListPrice = bookListPrice;
+                //if (decimal.TryParse(bookToEdit.ListPrice, out bookListPrice) == false)
+                //    book.ListPrice = 0;
+                //else
+                //    book.ListPrice = bookListPrice;
 
-                book.Id = bookToEdit.Id;
-                book.Isbn = !string.IsNullOrWhiteSpace(bookToEdit.Isbn) ? bookToEdit.Isbn : "No Isbn Available";
-                book.Isbn13 = !string.IsNullOrWhiteSpace(bookToEdit.Isbn13) ? bookToEdit.Isbn13 : "No Isbn13 Available";
-                book.Title = !string.IsNullOrWhiteSpace(bookToEdit.Title) ? bookToEdit.Title : "No Title Available";
-                book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
-                book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
-                book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
-                book.UpdatedBy = loggedInUser.Id;
-                book.UpdatedDate = updateDateTime;
+                //book.Id = bookToEdit.Id;
+                //book.Isbn = !string.IsNullOrWhiteSpace(bookToEdit.Isbn) ? bookToEdit.Isbn : "No Isbn Available";
+                //book.Isbn13 = !string.IsNullOrWhiteSpace(bookToEdit.Isbn13) ? bookToEdit.Isbn13 : "No Isbn13 Available";
+                //book.Title = !string.IsNullOrWhiteSpace(bookToEdit.Title) ? bookToEdit.Title : "No Title Available";
+                //book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
+                //book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
+                //book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
+                //book.UpdatedBy = loggedInUser.Id;
+                //book.UpdatedDate = updateDateTime;
                 
-                book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
+                //book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
 
-                await BookViewService.EditBookAsync(book);
+                await BookViewService.EditBookAsync(bookToEdit);
                 ReportEditingSuccess();
                 NavigationManager.NavigateTo("books", true);
             }
@@ -202,6 +200,19 @@ namespace Bookclub.Shared.Components
         {
             this.StatusLabel.SetColor(Color.Green);
             this.StatusLabel.SetValue("Book Edited Successfully");
+        }
+
+        private void ApplySubmittingStatus()
+        {
+            this.StatusLabel.SetColor(Color.Black);
+            this.StatusLabel.SetValue("Submitting ... ");
+            this.IsbnTextBox.Disable();
+            this.Isbn13TextBox.Disable();
+            this.AuthorTextBox.Disable();
+            this.TitleTextBox.Disable();
+            this.SubtitleTextBox.Disable();
+            this.PublishDatePicker.Disable();
+            this.ConfirmEditButton.Disable();
         }
 
     }

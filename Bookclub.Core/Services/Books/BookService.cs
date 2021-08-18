@@ -70,7 +70,7 @@ namespace Bookclub.Core.Services.Books
 
             }
 
-         Book returnedBook = JsonConvert.DeserializeObject<Book>(bookGetResponse.Content);
+            Book returnedBook = JsonConvert.DeserializeObject<Book>(bookGetResponse.Content);
 
             BookResponse getByIdResponse = new BookResponse
             {
@@ -104,27 +104,24 @@ namespace Bookclub.Core.Services.Books
 
         }
 
-        public async Task<BookResponse> EditBookAsync(/*HttpContext ctx,*/ Book book)
+        public async Task<BookResponse> EditBookAsync(Book book)
         {
             var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books");
 
             client.Timeout = -1;
 
+            // TODO: Fix issue with BadRequest. Created Date doesn't work on Method.Put
+            // Same exact code works with Post but not Put ???
+
             var bookEditRequest = new RestRequest(Method.PUT);
 
             bookEditRequest.AddJsonBody(book);
 
-            var testObject = JsonConvert.SerializeObject(book);
-
-            // ERROR when updating book
-            // Unable to cast object of type 'System.String' to type 'System.Collections.Generic.IDictionary`2[System.String,System.Object]'
             var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookEditRequest);
 
             if (bookAddResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
-
-                return invalidResponse;
+                return new BookResponse { ResponseMessage = "Problem editing book" };
             }
 
             BookResponse createdResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
