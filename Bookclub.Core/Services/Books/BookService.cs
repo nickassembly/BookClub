@@ -112,6 +112,7 @@ namespace Bookclub.Core.Services.Books
 
             // TODO: Fix issue with BadRequest. Created Date doesn't work on Method.Put
             // Same exact code works with Post but not Put ???
+            // Same object works on API end as well...
 
             var bookEditRequest = new RestRequest(Method.PUT);
 
