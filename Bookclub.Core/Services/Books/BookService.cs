@@ -110,10 +110,6 @@ namespace Bookclub.Core.Services.Books
 
             client.Timeout = -1;
 
-            // TODO: Fix issue with BadRequest. Created Date doesn't work on Method.Put
-            // Same exact code works with Post but not Put ???
-            // Same object works on API end as well...
-
             var bookEditRequest = new RestRequest(Method.PUT);
 
             bookEditRequest.AddJsonBody(book);
@@ -144,10 +140,7 @@ namespace Bookclub.Core.Services.Books
 
             if (bookDeleteResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookDeleteResponse.Content);
-
-                // handle logging and errors
-                return invalidResponse;
+                return new BookResponse { ResponseMessage = "Problem deleting book" };
             }
 
             BookResponse deletedResponse = JsonConvert.DeserializeObject<BookResponse>(bookDeleteResponse.Content);

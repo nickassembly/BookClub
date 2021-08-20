@@ -34,8 +34,6 @@ namespace Bookclub
             services.AddScoped<IBookViewService, BookViewService>();
             services.AddScoped<IBookDataApiService, BookDataApiService>();
 
-            services.AddScoped<AddressProvider>();
-
             services.AddBlazoredToast();
 
             services.AddBlazoredSessionStorage();
