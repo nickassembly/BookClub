@@ -65,22 +65,6 @@ namespace Bookclub.Shared.Components
         public ButtonBase AddBookDetailsButton { get; set; }
         public LabelBase StatusLabel { get; set; }
 
-        private DateTimeOffset _publishDateInput;
-        [Parameter]
-        public DateTimeOffset PublishDateInput
-        {
-            get => _publishDateInput;
-            set
-            {
-                if (_publishDateInput == value) return;
-                _publishDateInput = value;
-                PublishDateInputChanged.InvokeAsync(value);
-            }
-        }
-
-        [Parameter]
-        public EventCallback<DateTimeOffset> PublishDateInputChanged { get; set; }
-
         protected async override Task OnInitializedAsync()
         {
             var bookToUpdate = await GetBookById(BookToEdit.Id);

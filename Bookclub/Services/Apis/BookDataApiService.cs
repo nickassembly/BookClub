@@ -32,8 +32,6 @@ namespace Bookclub.Services.Apis
             if (!string.IsNullOrWhiteSpace(searchValue))
                 bookDetails = await GetVolume(searchValue);
 
-           // bookDetails = await GetVolume(searchValue);
-
             if (bookDetails == null || string.IsNullOrWhiteSpace(searchValue))
             {
                 BookView emptyBookViewData = new();
@@ -68,10 +66,12 @@ namespace Bookclub.Services.Apis
 
         public static async Task<Volume> GetVolume(string searchValue)
         {
-            // TODO: Current request is searching title, not isbn for results
             var result = await service.Volumes.List(searchValue).ExecuteAsync();
+
             if (result != null && result.Items != null)
             {
+                // TODO: Need method to look at list of results return and get the best one,
+                // currently it just gets the first result.
                 var item = result.Items.FirstOrDefault();
                 return item;
             }
@@ -88,8 +88,8 @@ namespace Bookclub.Services.Apis
         public static BooksService service = new BooksService(
                new BaseClientService.Initializer
                {
-                   ApplicationName = "BookClub",  // is this right? not sure if it matters
-                   ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //API key, needs to be moved somewhere safer
+                   ApplicationName = "BookClub", 
+                   ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", // TODO: Move Api key to better area or config file
                });
     }
 }

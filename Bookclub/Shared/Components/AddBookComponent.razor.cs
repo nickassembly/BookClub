@@ -5,20 +5,13 @@ using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
 using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
-using Google.Apis.Services;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
 {
     public partial class AddBookComponent
     {
-        // Added for error logging
-        [CascadingParameter]
-        public Error Error { get; set; }
-
         [Inject]
         public IBookViewService BookViewService { get; set; }
 
@@ -44,30 +37,13 @@ namespace Bookclub.Shared.Components
         public ButtonBase CancelAddButton { get; set; }
         public LabelBase StatusLabel { get; set; }
 
-        [Parameter]
-        public GoogleApiRequest GoogleRequest { get; set; }
-
-
         protected override void OnInitialized()
         {
             this.BookView = new BookView();
             this.State = ComponentState.Content;
-
-            // TODO: Refactor catch blocks to call Error.ProcessError to use global error component
-            // something similar to below
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                // Call global error component process error method
-                Error.ProcessError(ex);
-            }
   
         }
 
-        // TODO: Add Logging
         public async void AddBookAsync()
         {
             try
@@ -78,9 +54,9 @@ namespace Bookclub.Shared.Components
                 NavigationManager.NavigateTo("books", true);
                 
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO: Define exceptions
+                ApplySubmissionFailed(ex.Message);
             }
            
         }

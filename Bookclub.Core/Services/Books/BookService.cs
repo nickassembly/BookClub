@@ -81,6 +81,8 @@ namespace Bookclub.Core.Services.Books
             return getByIdResponse;
         }
 
+        // TODO: BookResponse object needs to be refactored, it is not mapping properly to response
+        // Change to new Response object for each CRUD operation
         public async Task<BookResponse> AddBookAsync(Book book)
         {
             var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books");
@@ -101,7 +103,6 @@ namespace Bookclub.Core.Services.Books
             BookResponse createdResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
 
             return createdResponse;
-
         }
 
         public async Task<BookResponse> EditBookAsync(Book book)
