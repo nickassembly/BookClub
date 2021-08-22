@@ -101,38 +101,11 @@ namespace Bookclub.Shared.Components
             try
             {
                 ApplySubmittingStatus();
+
                 await this.BookViewService.EditBookViewAsync(bookToEdit);
-               
-                //var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
 
-                //User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
-
-                //if (loggedInUser == null)
-                //    NavigationManager.NavigateTo("/login");
-
-                //DateTimeOffset updateDateTime = DateTimeOffset.UtcNow;
-
-                //decimal bookListPrice;
-
-                //if (decimal.TryParse(bookToEdit.ListPrice, out bookListPrice) == false)
-                //    book.ListPrice = 0;
-                //else
-                //    book.ListPrice = bookListPrice;
-
-                //book.Id = bookToEdit.Id;
-                //book.Isbn = !string.IsNullOrWhiteSpace(bookToEdit.Isbn) ? bookToEdit.Isbn : "No Isbn Available";
-                //book.Isbn13 = !string.IsNullOrWhiteSpace(bookToEdit.Isbn13) ? bookToEdit.Isbn13 : "No Isbn13 Available";
-                //book.Title = !string.IsNullOrWhiteSpace(bookToEdit.Title) ? bookToEdit.Title : "No Title Available";
-                //book.Subtitle = !string.IsNullOrEmpty(bookToEdit.Subtitle) ? bookToEdit.Subtitle : "";
-                //book.Author = !string.IsNullOrEmpty(bookToEdit.PrimaryAuthor) ? bookToEdit.PrimaryAuthor : "";
-                //book.Publisher = !string.IsNullOrEmpty(bookToEdit.Publisher) ? bookToEdit.Publisher : "";
-                //book.UpdatedBy = loggedInUser.Id;
-                //book.UpdatedDate = updateDateTime;
-                
-                //book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
-
-               // await BookViewService.EditBookAsync(bookToEdit);
                 ReportEditingSuccess();
+
                 NavigationManager.NavigateTo("books", true);
             }
             catch (Exception ex)

@@ -74,7 +74,6 @@ namespace Bookclub.Services.BookViews
             return response;
         }
 
-
         public async ValueTask<BookView> EditBookViewAsync(BookView bookToEdit)
         {
             Book editedBook = await MapToBook(bookToEdit);
@@ -130,8 +129,6 @@ namespace Bookclub.Services.BookViews
             if (loggedInUser == null)
                 return await Task.FromResult<Book>(null);
 
-           // DateTimeOffset currentDateTime = DateTimeOffset.UtcNow;
-
             bool isValidPriceInput = Decimal.TryParse(bookView.ListPrice, out decimal bookListPrice);
 
             if (!isValidPriceInput)
@@ -142,7 +139,6 @@ namespace Bookclub.Services.BookViews
 
             return new Book
             {
-             //   Id = Guid.NewGuid(),
                 Isbn = bookView.Isbn,
                 Isbn13 = bookView.Isbn13,
                 Author = bookView.PrimaryAuthor,
@@ -152,8 +148,6 @@ namespace Bookclub.Services.BookViews
                 Publisher = bookView.Publisher,
                 CreatedBy = loggedInUser.Id,
                 UpdatedBy = loggedInUser.Id,
-              //  CreatedDate = currentDateTime,
-              //  UpdatedDate = currentDateTime,
                 ListPrice = bookListPrice
             };
 
