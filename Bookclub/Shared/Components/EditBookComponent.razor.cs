@@ -101,7 +101,7 @@ namespace Bookclub.Shared.Components
             try
             {
                 ApplySubmittingStatus();
-                await this.BookViewService.EditBookAsync(bookToEdit);
+                await this.BookViewService.EditBookViewAsync(bookToEdit);
                
                 //var userEmail = await _sessionStorage.GetItemAsync<string>("emailAddress");
 
@@ -131,7 +131,7 @@ namespace Bookclub.Shared.Components
                 
                 //book.PublishDate = PublishDateInput != default ? PublishDateInput : DateTimeOffset.MinValue;
 
-                await BookViewService.EditBookAsync(bookToEdit);
+               // await BookViewService.EditBookAsync(bookToEdit);
                 ReportEditingSuccess();
                 NavigationManager.NavigateTo("books", true);
             }

@@ -10,6 +10,6 @@ namespace Bookclub.Core.Interfaces
         Task<BookResponse> GetAllBooks();
         Task<BookResponse> GetBookById(Guid bookId);
         Task<BookResponse> DeleteBookAsync(Guid bookId);
-        ValueTask<BookView> EditBookAsync(BookView bookToEdit);
+        ValueTask<BookView> EditBookViewAsync(BookView bookToEdit);
     }
 }

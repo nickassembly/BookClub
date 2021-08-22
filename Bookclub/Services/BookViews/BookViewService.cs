@@ -5,6 +5,7 @@ using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Core.Services.Books;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -50,6 +51,10 @@ namespace Bookclub.Services.BookViews
         public async ValueTask<BookView> AddBookViewAsync(BookView bookView)
         {
             Book book = await MapToBook(bookView);
+            book.Id = Guid.NewGuid();
+            book.CreatedDate = DateTimeOffset.UtcNow;
+            book.UpdatedDate = DateTimeOffset.UtcNow;
+
             var bookResponse = await _bookService.AddBookAsync(book);
 
             if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
@@ -70,9 +75,17 @@ namespace Bookclub.Services.BookViews
         }
 
 
-        public async ValueTask<BookView> EditBookAsync(BookView bookToEdit)
+        public async ValueTask<BookView> EditBookViewAsync(BookView bookToEdit)
         {
             Book editedBook = await MapToBook(bookToEdit);
+
+            var bookCreationInfo = await GetBookById(bookToEdit.Id);
+
+            editedBook.CreatedDate = bookCreationInfo.Book.CreatedDate;
+            editedBook.CreatedBy = bookCreationInfo.Book.CreatedBy;
+            editedBook.Id = bookToEdit.Id;
+            editedBook.UpdatedDate = bookCreationInfo.Book.UpdatedDate;
+
             var bookResponse = await _bookService.EditBookAsync(editedBook);
 
             if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
@@ -117,7 +130,7 @@ namespace Bookclub.Services.BookViews
             if (loggedInUser == null)
                 return await Task.FromResult<Book>(null);
 
-            DateTimeOffset currentDateTime = DateTimeOffset.UtcNow;
+           // DateTimeOffset currentDateTime = DateTimeOffset.UtcNow;
 
             bool isValidPriceInput = Decimal.TryParse(bookView.ListPrice, out decimal bookListPrice);
 
@@ -129,7 +142,7 @@ namespace Bookclub.Services.BookViews
 
             return new Book
             {
-                Id = Guid.NewGuid(),
+             //   Id = Guid.NewGuid(),
                 Isbn = bookView.Isbn,
                 Isbn13 = bookView.Isbn13,
                 Author = bookView.PrimaryAuthor,
@@ -139,8 +152,8 @@ namespace Bookclub.Services.BookViews
                 Publisher = bookView.Publisher,
                 CreatedBy = loggedInUser.Id,
                 UpdatedBy = loggedInUser.Id,
-                CreatedDate = currentDateTime,
-                UpdatedDate = currentDateTime,
+              //  CreatedDate = currentDateTime,
+              //  UpdatedDate = currentDateTime,
                 ListPrice = bookListPrice
             };
 

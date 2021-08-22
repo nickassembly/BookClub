@@ -115,6 +115,8 @@ namespace Bookclub.Core.Services.Books
 
             bookEditRequest.AddJsonBody(book);
 
+            var test = JsonConvert.SerializeObject(book);
+
             var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookEditRequest);
 
             if (bookAddResponse.StatusCode.ToString() != "OK")
