@@ -40,15 +40,49 @@ namespace Bookclub.Core.Services.Books
 
             List<Book> returnedBooks = JsonConvert.DeserializeObject<List<Book>>(bookGetResponse.Content);
 
-            BookResponse createdResponse = new BookResponse
+            BookResponse listResponse = new BookResponse
             {
                 ResponseMessage = bookGetResponse.StatusCode.ToString(),
                 Books = returnedBooks
             };
 
-            return createdResponse;
+            return listResponse;
         }
 
+        public async Task<BookResponse> GetBookById(Guid bookId)
+        {
+            // TODO: Test get by Id
+            var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books/{bookId}");
+
+            client.Timeout = -1;
+
+            //var bearerAccessToken = $"bearer " + ctx.Request.Cookies["access_token"]; // may need later
+
+            var bookGetRequest = new RestRequest(Method.GET);
+
+            //bookAddRequest.AddHeader("Authorization", bearerAccessToken); 
+
+            var bookGetResponse = await client.ExecuteAsync<BookResponse>(bookGetRequest);
+
+            if (bookGetResponse.StatusCode.ToString() != "OK")
+            {
+                return new BookResponse { ResponseMessage = "Problem adding book" };
+
+            }
+
+            Book returnedBook = JsonConvert.DeserializeObject<Book>(bookGetResponse.Content);
+
+            BookResponse getByIdResponse = new BookResponse
+            {
+                ResponseMessage = bookGetResponse.StatusCode.ToString(),
+                Book = returnedBook
+            };
+
+            return getByIdResponse;
+        }
+
+        // TODO: BookResponse object needs to be refactored, it is not mapping properly to response
+        // Change to new Response object for each CRUD operation
         public async Task<BookResponse> AddBookAsync(Book book)
         {
             var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books");
@@ -63,34 +97,31 @@ namespace Bookclub.Core.Services.Books
 
             if (bookAddResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
-
-                return invalidResponse;
+                return new BookResponse { ResponseMessage = "Problem adding book" };
             }
 
             BookResponse createdResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
 
             return createdResponse;
-
         }
 
-        public async Task<BookResponse> EditBookAsync(/*HttpContext ctx,*/ Book book)
+        public async Task<BookResponse> EditBookAsync(Book book)
         {
             var client = new RestClient($"https://bookclubapiservicev2.azurewebsites.net/api/books");
 
             client.Timeout = -1;
 
-            var bookAddRequest = new RestRequest(Method.PUT);
+            var bookEditRequest = new RestRequest(Method.PUT);
 
-            bookAddRequest.AddJsonBody(book);
+            bookEditRequest.AddJsonBody(book);
 
-            var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookAddRequest);
+            var test = JsonConvert.SerializeObject(book);
+
+            var bookAddResponse = await client.ExecuteAsync<BookResponse>(bookEditRequest);
 
             if (bookAddResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
-
-                return invalidResponse;
+                return new BookResponse { ResponseMessage = "Problem editing book" };
             }
 
             BookResponse createdResponse = JsonConvert.DeserializeObject<BookResponse>(bookAddResponse.Content);
@@ -112,10 +143,7 @@ namespace Bookclub.Core.Services.Books
 
             if (bookDeleteResponse.StatusCode.ToString() != "OK")
             {
-                BookResponse invalidResponse = JsonConvert.DeserializeObject<BookResponse>(bookDeleteResponse.Content);
-
-                // handle logging and errors
-                return invalidResponse;
+                return new BookResponse { ResponseMessage = "Problem deleting book" };
             }
 
             BookResponse deletedResponse = JsonConvert.DeserializeObject<BookResponse>(bookDeleteResponse.Content);

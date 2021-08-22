@@ -1,10 +1,4 @@
-﻿using Bookclub.Models.Books;
-using Bookclub.Models.Books.Exceptions;
-using Moq;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Bookclub.Tests.Services.Books
+﻿namespace Bookclub.Tests.Services.Books
 {
     public partial class BookServiceTests
     {

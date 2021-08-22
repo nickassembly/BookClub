@@ -12,8 +12,6 @@ namespace Bookclub.Views.Pages
 {
     public partial class Books
     {
-        public Book Book { get; set; }
-        public ButtonBase DeleteButton { get; set; }
         public LabelBase StatusLabel { get; set; }
         bool ShowEditComponent { get; set; } = false;
         bool ShowAddComponent { get; set; } = false;
@@ -55,7 +53,6 @@ namespace Bookclub.Views.Pages
             return bookList;
         }
 
-        // TODO: Error handling on delete and edit reference
         public async Task<BookResponse> DeleteBookAsync(Guid bookId)
         {
             try
@@ -65,10 +62,9 @@ namespace Bookclub.Views.Pages
                 ReportBookDeletionSucceeded();
                 NavigationManager.NavigateTo("books", true);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new BookResponse { ResponseMessage = $"Delete Book Exception: {ex.Message}" };
             }
 
             return null;
@@ -98,9 +94,6 @@ namespace Bookclub.Views.Pages
             this.StatusLabel.SetColor(Color.Red);
             this.StatusLabel.SetValue("Deleted Successfully");
         }
-
-
-
 
     }
 }

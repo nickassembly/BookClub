@@ -7,6 +7,7 @@ namespace Bookclub.Core.Interfaces
     public interface IBookService
     {
         Task<BookResponse> GetAllBooks();
+        Task<BookResponse> GetBookById(Guid bookId);
         Task<BookResponse> AddBookAsync(Book book);
         Task<BookResponse> DeleteBookAsync(Guid bookId);
         Task<BookResponse> EditBookAsync(Book book);

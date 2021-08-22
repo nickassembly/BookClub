@@ -1,8 +1,11 @@
 ﻿using Blazored.SessionStorage;
+using Bookclub.ApiModels.CreateBook;
+using Bookclub.BooksAggregateModels;
 using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Core.Services.Books;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -40,36 +43,65 @@ namespace Bookclub.Services.BookViews
             return _bookService.GetAllBooks();
         }
 
+        public Task<BookResponse> GetBookById(Guid bookId)
+        {
+            return _bookService.GetBookById(bookId);
+        }
+
         public async ValueTask<BookView> AddBookViewAsync(BookView bookView)
         {
-            // TODO: Add Book View validation (on back end)
             Book book = await MapToBook(bookView);
-            await _bookService.AddBookAsync(book);
+            book.Id = Guid.NewGuid();
+            book.CreatedDate = DateTimeOffset.UtcNow;
+            book.UpdatedDate = DateTimeOffset.UtcNow;
+
+            var bookResponse = await _bookService.AddBookAsync(book);
+
+            if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
+            {
+                // TODO: Return error message when book cannot be added
+            }
+
             return bookView;
         }
 
-
-        public async Task<BookResponse> EditBookAsync(Book bookToEdit)
+        public async Task<GoogleApiResponse> GetApiDataAsync()
         {
-            var bookDetails = new Google.Apis.Books.v1.Data.Volume();
-            bookDetails = await SearchISBN(bookToEdit.Isbn);
-            bookToEdit.Author = bookDetails.VolumeInfo.Authors[0]; //TODO: Authors is array, should change book model to match
-            bookToEdit.Title = bookDetails.VolumeInfo.Title;
-            bookToEdit.Subtitle = bookDetails.VolumeInfo.Subtitle;
-            //bookToEdit.PublishDate = Date(bookDetails.VolumeInfo.PublishedDate);
-            bookToEdit.Publisher = bookDetails.VolumeInfo.Publisher;
-            bookToEdit.Title = bookDetails.VolumeInfo.Title;
-            //bookToEdit.ListPrice = (double)bookDetails.SaleInfo.ListPrice.Amount;
-            
-            //bookToEdit.Isbn = bookDetails.VolumeInfo.IndustryIdentifiers[0]["identifier"] TODO: Check for IndustryIdentifiers array for type ISBN_10 or ISBN_13
+            GoogleApiResponse response = new();
 
-            return await _bookService.EditBookAsync(bookToEdit);
+
+
+            return response;
+        }
+
+
+        public async ValueTask<BookView> EditBookViewAsync(BookView bookToEdit)
+        {
+            Book editedBook = await MapToBook(bookToEdit);
+
+            var bookCreationInfo = await GetBookById(bookToEdit.Id);
+
+            editedBook.CreatedDate = bookCreationInfo.Book.CreatedDate;
+            editedBook.CreatedBy = bookCreationInfo.Book.CreatedBy;
+            editedBook.Id = bookToEdit.Id;
+            editedBook.UpdatedDate = bookCreationInfo.Book.UpdatedDate;
+
+            var bookResponse = await _bookService.EditBookAsync(editedBook);
+
+            if (string.IsNullOrWhiteSpace(bookResponse.ResponseMessage))
+            {
+                // TODO: Return error message when book cannot be added
+            }
+
+            return bookToEdit;
         }
 
         public Task<BookResponse> DeleteBookAsync(Guid bookId)
         {
             return _bookService.DeleteBookAsync(bookId);
         }
+
+        // TODO: Remove this code once method is abstracted to interface and working properly
         public static async Task<Google.Apis.Books.v1.Data.Volume> SearchISBN(string isbn)
         {
             var result = await service.Volumes.List(isbn).ExecuteAsync();
@@ -80,12 +112,14 @@ namespace Bookclub.Services.BookViews
             }
             return null;
         }
+
         public static Google.Apis.Books.v1.BooksService service = new Google.Apis.Books.v1.BooksService(
                new BaseClientService.Initializer
                {
                    ApplicationName = "BookClub",  // is this right? not sure if it matters
                    ApiKey = "AIzaSyCjqD7OtvMLj-JMh3erdPRh_qWyRJvnvxw", //nicky API key
                });
+
         public async Task<Book> MapToBook(BookView bookView)
         {
 
@@ -96,18 +130,19 @@ namespace Bookclub.Services.BookViews
             if (loggedInUser == null)
                 return await Task.FromResult<Book>(null);
 
-            DateTimeOffset currentDateTime = DateTimeOffset.UtcNow;
+           // DateTimeOffset currentDateTime = DateTimeOffset.UtcNow;
 
             bool isValidPriceInput = Decimal.TryParse(bookView.ListPrice, out decimal bookListPrice);
 
             if (!isValidPriceInput)
                 bookListPrice = 0.00m;
 
-            // TODO: GetBookDetails Method to go out to IsbnDB and return proper book data
+            // TODO: Need to verify that books has either ISBN10/13, and author, title
+            // If not, return user to Add or Edit Screen with message... possibly toast?
 
             return new Book
             {
-                Id = Guid.NewGuid(),
+             //   Id = Guid.NewGuid(),
                 Isbn = bookView.Isbn,
                 Isbn13 = bookView.Isbn13,
                 Author = bookView.PrimaryAuthor,
@@ -117,8 +152,8 @@ namespace Bookclub.Services.BookViews
                 Publisher = bookView.Publisher,
                 CreatedBy = loggedInUser.Id,
                 UpdatedBy = loggedInUser.Id,
-                CreatedDate = currentDateTime,
-                UpdatedDate = currentDateTime,
+              //  CreatedDate = currentDateTime,
+              //  UpdatedDate = currentDateTime,
                 ListPrice = bookListPrice
             };
 

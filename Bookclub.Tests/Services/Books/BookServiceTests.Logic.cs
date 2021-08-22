@@ -1,14 +1,4 @@
-﻿using Bookclub.Models.Books;
-using FluentAssertions;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Bookclub.Tests.Services.Books
+﻿namespace Bookclub.Tests.Services.Books
 {
     public partial class BookServiceTests
     {

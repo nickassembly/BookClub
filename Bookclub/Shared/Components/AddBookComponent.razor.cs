@@ -1,26 +1,25 @@
-﻿using Bookclub.Core.DomainAggregates;
+﻿using Bookclub.BooksAggregateModels;
+using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Shared.Colors;
 using Bookclub.Shared.Components.ContainerComponents;
+using Bookclub.Shared.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using System;
-using System.Threading.Tasks;
 
 namespace Bookclub.Shared.Components
 {
     public partial class AddBookComponent
     {
-        // Added for error logging
-        [CascadingParameter]
-        public Error Error { get; set; }
-
         [Inject]
         public IBookViewService BookViewService { get; set; }
 
         [Inject]
         public IBookService BookService { get; set; }
+
+        [Inject]
+        public IBookDataApiService BookDataApiService { get; set; }
 
         public ComponentState State { get; set; }
         public BookView BookView { get; set; }
@@ -42,22 +41,9 @@ namespace Bookclub.Shared.Components
         {
             this.BookView = new BookView();
             this.State = ComponentState.Content;
-
-            // TODO: Refactor catch blocks to call Error.ProcessError to use global error component
-            // something similar to below
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                // Call global error component process error method
-                Error.ProcessError(ex);
-            }
   
         }
 
-        // TODO: Add Logging
         public async void AddBookAsync()
         {
             try
@@ -68,17 +54,34 @@ namespace Bookclub.Shared.Components
                 NavigationManager.NavigateTo("books", true);
                 
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO: Define exceptions
+                ApplySubmissionFailed(ex.Message);
             }
            
         }
 
-        public async void AddBookDetails()
+        public async void GetApiDataAsync()
         {
-            string isbn = "0735619670";
-            await JSRuntime.InvokeAsync<string>("getBookInfo", new { isbn });
+            GoogleApiRequest googleRequest = new();
+
+            googleRequest.Isbn = BookView.Isbn;
+            googleRequest.Isbn13 = BookView.Isbn13;
+            googleRequest.Title = BookView.Title;
+
+            var apiBookData = await BookDataApiService.GetGoogleBookData(googleRequest);
+
+            BookView.Isbn = apiBookData.Isbn;
+            BookView.Isbn13 = apiBookData.Isbn13;
+            BookView.PrimaryAuthor = apiBookData.PrimaryAuthor;
+            BookView.Title = apiBookData.Title;
+            BookView.Subtitle = apiBookData.Subtitle;
+            BookView.Publisher = apiBookData.Publisher;
+            BookView.PublishedDate = apiBookData.PublishedDate;
+            BookView.ListPrice = apiBookData.ListPrice;
+
+            StateHasChanged();
+
         }
 
         public async void CancelAddAsync()

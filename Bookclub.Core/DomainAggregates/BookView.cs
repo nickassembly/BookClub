@@ -13,7 +13,7 @@ namespace Bookclub.Core.DomainAggregates
         public string Isbn13 { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
-        public string PrimaryAuthor { get; set; }
+        public string PrimaryAuthor { get; set; } 
         public string Publisher { get; set; }
         public string ListPrice { get; set; }
         public DateTimeOffset PublishedDate { get; set; } = DateTime.Now;

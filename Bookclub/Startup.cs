@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using System.Net.Http;
 using Bookclub.Core.Services.Books;
 using Bookclub.Services.Users;
+using Bookclub.Shared.Interfaces;
+using Bookclub.Services.Apis;
 
 namespace Bookclub
 {
@@ -30,8 +32,7 @@ namespace Bookclub
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IBookViewService, BookViewService>();
-
-            services.AddScoped<AddressProvider>();
+            services.AddScoped<IBookDataApiService, BookDataApiService>();
 
             services.AddBlazoredToast();
 
