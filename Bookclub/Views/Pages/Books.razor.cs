@@ -1,9 +1,12 @@
-﻿using Bookclub.Core.DomainAggregates;
+﻿using Blazored.SessionStorage;
+using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Color = Bookclub.Shared.Colors.Color;
@@ -18,10 +21,14 @@ namespace Bookclub.Views.Pages
         bool ShowBookList { get; set; } = true;
 
         private readonly IBookService _bookService;
+        private readonly IUserService _userService;
+        private readonly IHttpContextAccessor _ctx;
 
-        public Books(IBookService bookService)
+        public Books(IBookService bookService, IUserService userService, IHttpContextAccessor ctx)
         {
             _bookService = bookService;
+            _userService = userService;
+            _ctx = ctx;
         }
 
         public Books()
@@ -46,9 +53,14 @@ namespace Bookclub.Views.Pages
         {
             List<Book> bookList = new List<Book>();
 
+            var userEmail = await SessionStorageService.GetItemAsync<string>("emailAddress");
+
+            // TODO: This is null
+            User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
+
             var bookResponse = await BookViewService.GetAllBooks();
 
-            BookList = bookResponse.Books;
+            BookList = bookResponse.Books.Where(x => x.CreatedBy.ToString() == loggedInUser.Id.ToString()).ToList();
             
             return bookList;
         }

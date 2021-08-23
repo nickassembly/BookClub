@@ -1,9 +1,14 @@
 ﻿@page "/books"
 @using Bookclub.Shared.Components
 @using Bookclub.Core.DomainAggregates
+@using Blazored.SessionStorage
+@using Microsoft.AspNetCore.Http
+
 
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject ISessionStorageService SessionStorageService  
+@inject IHttpContextAccessor httpContextAccessor
 
 <div class="container">
     @if (ShowBookList)
