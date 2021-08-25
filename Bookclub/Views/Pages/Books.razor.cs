@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using Color = Bookclub.Shared.Colors.Color;
@@ -22,13 +23,19 @@ namespace Bookclub.Views.Pages
 
         private readonly IBookService _bookService;
         private readonly IUserService _userService;
+        private readonly ISessionStorageService _sessionStorage;
         private readonly IHttpContextAccessor _ctx;
 
-        public Books(IBookService bookService, IUserService userService, IHttpContextAccessor ctx)
+        private readonly HttpClient _httpClient;
+
+
+        public Books(IBookService bookService, IUserService userService, IHttpContextAccessor ctx, ISessionStorageService sessionStorage, HttpClient httpClient)
         {
             _bookService = bookService;
             _userService = userService;
             _ctx = ctx;
+            _sessionStorage = sessionStorage;
+            _httpClient = httpClient;
         }
 
         public Books()
@@ -55,7 +62,8 @@ namespace Bookclub.Views.Pages
 
             var userEmail = await SessionStorageService.GetItemAsync<string>("emailAddress");
 
-            // TODO: This is null
+            // TODO: Need better way to get logged in users and user Id
+            // Cascading parameters?
             User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
 
             var bookResponse = await BookViewService.GetAllBooks();

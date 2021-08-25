@@ -69,8 +69,6 @@ namespace Bookclub.Services.BookViews
         {
             GoogleApiResponse response = new();
 
-
-
             return response;
         }
 
