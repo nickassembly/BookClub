@@ -3,7 +3,9 @@ using Bookclub.Core.DomainAggregates;
 using Bookclub.Core.Interfaces;
 using Bookclub.Views.Bases;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,21 +23,19 @@ namespace Bookclub.Views.Pages
         bool ShowAddComponent { get; set; } = false;
         bool ShowBookList { get; set; } = true;
 
-        private readonly IBookService _bookService;
+        [CascadingParameter]
+        private Task<AuthenticationState> _authState { get; set; }
+
+        private AuthenticationState authState;
+
         private readonly IUserService _userService;
-        private readonly ISessionStorageService _sessionStorage;
-        private readonly IHttpContextAccessor _ctx;
+        private readonly IBookService _bookService;
 
-        private readonly HttpClient _httpClient;
-
-
-        public Books(IBookService bookService, IUserService userService, IHttpContextAccessor ctx, ISessionStorageService sessionStorage, HttpClient httpClient)
+        public Books(IBookService bookService, IUserService userService)
         {
             _bookService = bookService;
             _userService = userService;
-            _ctx = ctx;
-            _sessionStorage = sessionStorage;
-            _httpClient = httpClient;
+      
         }
 
         public Books()
@@ -56,19 +56,23 @@ namespace Bookclub.Views.Pages
             await GetBooks();
         }
 
+        // TODO: Difference between injecting in Razor and code behind
+        // do i need to use DI in both places or one or the other? 
         public async Task<IEnumerable<Book>> GetBooks()
         {
             List<Book> bookList = new List<Book>();
 
-            var userEmail = await SessionStorageService.GetItemAsync<string>("emailAddress");
+            var authState = await _authState;
 
-            // TODO: Need better way to get logged in users and user Id
-            // Cascading parameters?
-            User loggedInUser = await _userService.GetCurrentlyLoggedInUser(_ctx.HttpContext, userEmail);
+            if (authState != null)
+            {
+ 
+            }
+
 
             var bookResponse = await BookViewService.GetAllBooks();
 
-            BookList = bookResponse.Books.Where(x => x.CreatedBy.ToString() == loggedInUser.Id.ToString()).ToList();
+            BookList = bookResponse.Books;
             
             return bookList;
         }
